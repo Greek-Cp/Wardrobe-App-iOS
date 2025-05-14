@@ -14,3 +14,4 @@ struct ContentView: View {
     ContentView()
         .modelContainer(for: WardrobeItem.self, inMemory: true)
 }
+
