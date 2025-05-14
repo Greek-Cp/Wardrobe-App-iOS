@@ -1,11 +1,5 @@
-//
-//  AddItemView.swift
-//  WardrobeApp1
-//
-//  Created by Mac on 13/05/25.
-//
-
 import SwiftUI
+
 // Custom Radio Button Style
 struct RadioButtonStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -49,11 +43,11 @@ struct ColorSelectionView: View {
                 ForEach(Array(colors.keys.sorted()), id: \.self) { colorName in
                     Button(action: {
                         selectedColor = colorName
-                        dismiss()
+                        dismiss() //this auto close the NavStack after user choose one color
                     }) {
                         HStack {
                             Circle()
-                                .fill(colors[colorName] ?? .gray)
+                                .fill(colors[colorName] ?? .gray) //defaults to gray color in case color not found
                                 .frame(width: 30, height: 30)
                             Text(colorName)
                             Spacer()
@@ -183,7 +177,7 @@ struct AddItemView: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text("Name")
                                 .fontWeight(.medium)
-                            TextField("Value", text: $name)
+                            TextField("Cloth name here...", text: $name)
                                 .padding(.vertical, 8)
                         }
                         .padding(.vertical, 8)
@@ -198,7 +192,7 @@ struct AddItemView: View {
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)
                                 Spacer()
-                                Text(type.isEmpty ? "None" : type)
+                                Text(type.isEmpty ? "Select..." : type)
                                     .foregroundColor(type.isEmpty ? .gray : .primary)
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14))
@@ -223,7 +217,7 @@ struct AddItemView: View {
                                         .frame(width: 16, height: 16)
                                         .padding(.trailing, 4)
                                 }
-                                Text(color.isEmpty ? "None" : color)
+                                Text(color.isEmpty ? "Select..." : color)
                                     .foregroundColor(color.isEmpty ? .gray : .primary)
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14))
@@ -277,7 +271,7 @@ struct AddItemView: View {
                                 .fontWeight(.medium)
                                 .padding(.top, 8)
                             
-                            TextField("", text: $description)
+                            TextField("Add description/keywords...", text: $description)
                                 .padding(.vertical, 8)
                         }
                         Divider()
@@ -287,14 +281,17 @@ struct AddItemView: View {
                 }
             }
             .background(Color(UIColor.systemBackground))
-            .navigationTitle("Add Clothes")
+            .navigationTitle("Add Cloth")
             .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
                         dismiss()
+                        //TODO: should confirm to the user any data filled in this page will not be saved?
                     }) {
-                       
+                        Image(systemName: "chevron.left")
+                        Text("Dashboard")
                     }
                 }
                 
@@ -314,8 +311,8 @@ struct AddItemView: View {
                         modelContext.insert(newItem)
                         dismiss()
                     }
-                    .foregroundColor(.blue)
-                    .disabled(name.isEmpty || type.isEmpty || color.isEmpty)
+                    .foregroundColor(name.isEmpty || type.isEmpty || color.isEmpty ? .gray : .blue)
+                    .disabled(name.isEmpty || type.isEmpty || color.isEmpty) //TODO: should alert the user which field isn't filled yet instead? Also don't forget to add photo checking as well.
                 }
             }
             .sheet(isPresented: $showingTypeSelection) {
