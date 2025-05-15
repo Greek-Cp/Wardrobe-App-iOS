@@ -62,13 +62,14 @@ struct DetailItemView: View {
                                     ForEach(Array(editedImages.enumerated()), id: \.offset) { index, image in
                                         Image(uiImage: image)
                                             .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(maxWidth: .infinity)
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: 320)
+                                            .clipShape(RoundedRectangle(cornerRadius: 12))
                                             .tag(index)
                                     }
                                 }
                             }
-                            .frame(height: 300)
+                            .frame(height: 320)
                             .tabViewStyle(PageTabViewStyle())
                             .onTapGesture {
                                 showingImageOptions = true
@@ -81,13 +82,14 @@ struct DetailItemView: View {
                                 if let uiImage = UIImage(contentsOfFile: path) {
                                     Image(uiImage: uiImage)
                                         .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(maxWidth: .infinity)
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(height: 320)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
                                         .tag(index)
                                 }
                             }
                         }
-                        .frame(height: 300)
+                        .frame(height: 320)
                         .tabViewStyle(PageTabViewStyle())
                     }
                     
@@ -107,18 +109,6 @@ struct DetailItemView: View {
                     }
                     .padding(12)
                     .foregroundColor(.primary)
-                }
-                
-                // Image indicators
-                if (isEditing ? editedImages.count : item.imagePaths.count) > 1 {
-                    HStack(spacing: 8) {
-                        ForEach(0..<(isEditing ? editedImages.count : item.imagePaths.count), id: \.self) { index in
-                            Circle()
-                                .fill(currentImageIndex == index ? Color.blue : Color.gray)
-                                .frame(width: 8, height: 8)
-                        }
-                    }
-                    .padding(.top, -8)
                 }
                 
                 if isEditing {
@@ -267,15 +257,6 @@ struct DetailItemView: View {
                     
                     // Status buttons
                     VStack(spacing: 12) {
-                        HStack {
-                            Text("Status:")
-                                .font(.headline)
-                            Text(item.status)
-                                .foregroundColor(item.status == ItemStatus.available.rawValue ? .green : .red)
-                                .fontWeight(.medium)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        
                         HStack(spacing: 12) {
                             statusButton(icon: "checkmark", label: "Available")
                             statusButton(icon: "tshirt.fill", label: "Use")
