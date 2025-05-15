@@ -114,6 +114,7 @@ struct DetailItemView: View {
     @ViewBuilder
     private func tagView(_ text: String) -> some View {
         Text(text)
+            .frame(maxWidth: .infinity)
             .padding(.vertical, 6)
             .padding(.horizontal, 12)
             .background(Color.blue.opacity(0.1))
