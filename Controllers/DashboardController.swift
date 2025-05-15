@@ -8,7 +8,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Blue Shirt",
                    category: "Tops",
-                   color: "Blue",
+                   colors: ["Blue", "White"],
                    describe: "A stylish blue shirt, perfect for casual outings.",
                    style: "Casual",
                    type: "Cotton",
@@ -18,7 +18,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Black Jeans",
                    category: "Bottoms",
-                   color: "Black",
+                   colors: ["Black", "Gray"],
                    describe: "Slim fit black jeans that go well with almost any top.",
                    style: "Casual",
                    type: "Denim",
@@ -28,7 +28,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Red Dress",
                    category: "Dresses",
-                   color: "Red",
+                   colors: ["Red", "Black"],
                    describe: "A bright red dress, perfect for formal events.",
                    style: "Formal",
                    type: "Silk",
@@ -38,7 +38,7 @@ class DashboardController {
                WardrobeItem(
                    name: "White Sneakers",
                    category: "Shoes",
-                   color: "White",
+                   colors: ["White", "Gray"],
                    describe: "Comfortable white sneakers for all-day wear.",
                    style: "Casual",
                    type: "Leather",
@@ -48,7 +48,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Black Jacket",
                    category: "Outerwear",
-                   color: "Black",
+                   colors: ["Black"],
                    describe: "A sleek black jacket for cold weather.",
                    style: "Casual",
                    type: "Wool",
@@ -58,7 +58,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Green T-shirt",
                    category: "Tops",
-                   color: "Green",
+                   colors: ["Green", "White"],
                    describe: "A comfortable green t-shirt for everyday wear.",
                    style: "Casual",
                    type: "Cotton",
@@ -68,7 +68,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Grey Sweatpants",
                    category: "Bottoms",
-                   color: "Grey",
+                   colors: ["Gray", "Black"],
                    describe: "Soft and cozy grey sweatpants, perfect for lounging.",
                    style: "Casual",
                    type: "Polyester",
@@ -78,7 +78,7 @@ class DashboardController {
                WardrobeItem(
                    name: "Brown Boots",
                    category: "Shoes",
-                   color: "Brown",
+                   colors: ["Brown", "Black"],
                    describe: "Sturdy brown boots for outdoor activities.",
                    style: "Outdoor",
                    type: "Leather",

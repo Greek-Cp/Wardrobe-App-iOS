@@ -29,6 +29,8 @@
 		0400D4132DCC7A99006E752C /* EditItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0400D4032DCC7A99006E752C /* EditItemView.swift */; };
 		04A775002DD2D628000CD1B4 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A774FF2DD2D628000CD1B4 /* AddItemView.swift */; };
 		04A775022DD2D69D000CD1B4 /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775012DD2D69D000CD1B4 /* ItemController.swift */; };
+		04A775242DD584EB000CD1B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775232DD584EB000CD1B4 /* ImagePicker.swift */; };
+		04A775282DD58538000CD1B4 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775272DD58538000CD1B4 /* ImageManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,8 @@
 		0400D4032DCC7A99006E752C /* EditItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditItemView.swift; sourceTree = "<group>"; };
 		04A774FF2DD2D628000CD1B4 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		04A775012DD2D69D000CD1B4 /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
+		04A775232DD584EB000CD1B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		04A775272DD58538000CD1B4 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +75,7 @@
 		0400D3D32DCC7A2F006E752C = {
 			isa = PBXGroup;
 			children = (
+				04A775262DD58530000CD1B4 /* Utils */,
 				0400D3F12DCC7A99006E752C /* App */,
 				0400D3FD2DCC7A99006E752C /* Controllers */,
 				0400D3F92DCC7A99006E752C /* Helpers */,
@@ -161,6 +166,7 @@
 			children = (
 				0400D3FE2DCC7A99006E752C /* CustomButton.swift */,
 				0400D3FF2DCC7A99006E752C /* ItemCell.swift */,
+				04A775232DD584EB000CD1B4 /* ImagePicker.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -175,6 +181,14 @@
 				04A774FF2DD2D628000CD1B4 /* AddItemView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		04A775262DD58530000CD1B4 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				04A775272DD58538000CD1B4 /* ImageManager.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,6 +271,7 @@
 				0400D40D2DCC7A99006E752C /* DetailController.swift in Sources */,
 				0400D4132DCC7A99006E752C /* EditItemView.swift in Sources */,
 				0400D40C2DCC7A99006E752C /* DashboardController.swift in Sources */,
+				04A775282DD58538000CD1B4 /* ImageManager.swift in Sources */,
 				0400D4112DCC7A99006E752C /* DashboardView.swift in Sources */,
 				0400D4062DCC7A99006E752C /* SceneDelegate.swift in Sources */,
 				0400D4072DCC7A99006E752C /* ModelContainer.swift in Sources */,
@@ -265,6 +280,7 @@
 				0400D3E22DCC7A2F006E752C /* ContentView.swift in Sources */,
 				0400D4122DCC7A99006E752C /* DetailItemView.swift in Sources */,
 				0400D3E42DCC7A2F006E752C /* Item.swift in Sources */,
+				04A775242DD584EB000CD1B4 /* ImagePicker.swift in Sources */,
 				0400D3E02DCC7A2F006E752C /* WardrobeApp1App.swift in Sources */,
 				0400D40A2DCC7A99006E752C /* Constants.swift in Sources */,
 			);

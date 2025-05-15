@@ -15,9 +15,19 @@ struct ItemCell: View {
             
             Spacer()
             
-            Circle()
-                .fill(colorFromString(item.color))
-                .frame(width: 20, height: 20)
+            // Display up to 3 colors
+            HStack(spacing: 4) {
+                ForEach(item.colors.prefix(3), id: \.self) { colorName in
+                    Circle()
+                        .fill(colorFromString(colorName))
+                        .frame(width: 20, height: 20)
+                }
+                if item.colors.count > 3 {
+                    Text("+\(item.colors.count - 3)")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
+            }
         }
         .padding(.vertical, 8)
     }
@@ -34,6 +44,14 @@ struct ItemCell: View {
             return .black
         case "white":
             return .white
+        case "yellow":
+            return .yellow
+        case "purple":
+            return .purple
+        case "gray":
+            return .gray
+        case "brown":
+            return Color(red: 0.6, green: 0.4, blue: 0.2)
         default:
             return .gray
         }

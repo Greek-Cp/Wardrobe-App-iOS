@@ -8,6 +8,7 @@ struct DetailItemView: View {
     @State var item: WardrobeItem
     @State private var selectedStatus: String = ""
     @State private var showConfirmation = false
+    @State private var currentImageIndex = 0
     
     private let controller = ItemController()
     
@@ -15,25 +16,27 @@ struct DetailItemView: View {
         ScrollView {
             VStack(spacing: 16) {
                 ZStack(alignment: .topTrailing) {
-                    ZStack {
-                        if let uiImage = UIImage(contentsOfFile: item.imagePath) {
-                            Image(uiImage: uiImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity)
-                        } else if UIImage(named: item.imagePath) != nil {
-                            Image(item.imagePath) // Loads from assets
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity)
-                        } else {
+                    TabView(selection: $currentImageIndex) {
+                        ForEach(Array(item.imagePaths.enumerated()), id: \.offset) { index, path in
                             ZStack {
-                                Color.gray.frame(height: 250)
-                                ProgressView("Loading...")
-                                    .progressViewStyle(CircularProgressViewStyle())
+                                if let uiImage = UIImage(contentsOfFile: path) {
+                                    Image(uiImage: uiImage)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: .infinity)
+                                } else {
+                                    ZStack {
+                                        Color.gray.frame(height: 250)
+                                        ProgressView("Loading...")
+                                            .progressViewStyle(CircularProgressViewStyle())
+                                    }
+                                }
                             }
+                            .tag(index)
                         }
                     }
+                    .frame(height: 300)
+                    .tabViewStyle(PageTabViewStyle())
                     
                     Button(action: {
                         // edit action
@@ -49,11 +52,17 @@ struct DetailItemView: View {
                     .foregroundColor(.primary)
                 }
                 
-                RoundedRectangle(cornerRadius: 20)
-                    .frame(width: 50, height: 24)
-                    .foregroundColor(.white.opacity(0.9))
-                    .overlay(Circle().frame(width: 10, height: 10).foregroundColor(.black))
+                // Image indicators
+                if item.imagePaths.count > 1 {
+                    HStack(spacing: 8) {
+                        ForEach(0..<item.imagePaths.count, id: \.self) { index in
+                            Circle()
+                                .fill(currentImageIndex == index ? Color.blue : Color.gray)
+                                .frame(width: 8, height: 8)
+                        }
+                    }
                     .padding(.top, -8)
+                }
 
                 VStack(spacing: 4) {
                     Text(item.name)
@@ -69,10 +78,14 @@ struct DetailItemView: View {
                 .padding(.horizontal)
                 
                 VStack(alignment: .leading){
-                    HStack {
-                        tagView(item.category)
-                        tagView(item.color)
-                        tagView(item.style)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            tagView(item.category)
+                            ForEach(item.colors, id: \.self) { color in
+                                tagView(color)
+                            }
+                            tagView(item.style)
+                        }
                     }
                     .padding(.horizontal)
                 }
@@ -80,8 +93,8 @@ struct DetailItemView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Description")
                         .font(.headline)
-                    ZStack(alignment: Alignment (horizontal: .leading, vertical: .top)){
-                        RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
+                    ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)){
+                        RoundedRectangle(cornerRadius: 25.0)
                             .foregroundStyle(.gray)
                         Text(item.describe)
                             .foregroundStyle(Color.white)
@@ -90,6 +103,7 @@ struct DetailItemView: View {
                     }.frame(height: 120)
                 }
                 .padding(.horizontal)
+                
                 HStack(spacing: 12) {
                     statusButton(icon: "checkmark", label: "Available")
                     statusButton(icon: "hanger", label: "Laundry")
@@ -173,6 +187,7 @@ struct DetailItemView: View {
         }
     }
 }
+
 #Preview {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: WardrobeItem.self, configurations: config)
@@ -180,11 +195,11 @@ struct DetailItemView: View {
     let sampleItem = WardrobeItem(
         name: "Jeans Culottes",
         category: "Bottoms",
-        color: "Blue",
+        colors: ["Blue", "Black"],
         describe: "Jeans, Coulotte, Long, Oversized, Uniqlo",
         style: "Casual",
         type: "Bottom",
-        imagePath: "kulot",
+        imagePath: "kulot,kulot2,kulot3",
         isAvailable: true
     )
 

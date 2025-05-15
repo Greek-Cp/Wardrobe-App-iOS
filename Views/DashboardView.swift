@@ -31,8 +31,9 @@ struct ItemCardView: View {
     var body: some View {
         NavigationLink(destination: DetailItemView(item: item)) {
             VStack(alignment: .leading) {
-                // Gambar
-                if let uiImage = UIImage(named: item.imagePath) {
+                // Image
+                if let firstImagePath = item.imagePaths.first,
+                   let uiImage = UIImage(contentsOfFile: firstImagePath) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -44,10 +45,15 @@ struct ItemCardView: View {
                         .fill(Color.gray.opacity(0.3))
                         .frame(height: 150)
                         .cornerRadius(8)
+                        .overlay(
+                            Image(systemName: "photo")
+                                .font(.system(size: 30))
+                                .foregroundColor(.gray)
+                        )
                 }
                 
-                // Nama item + badge dalam satu baris
-                HStack (alignment: .top){
+                // Name item + badge in one line
+                HStack(alignment: .top) {
                     Text(item.name.count > (item.isAvailable ? 17 : 10)
                          ? String(item.name.prefix(item.isAvailable ? 17 : 10)) + "…"
                          : item.name)
@@ -64,20 +70,52 @@ struct ItemCardView: View {
                     }
                 }
                 .padding(.top, 4)
-                // Kategori item & gaya
+                
+                // Colors
+                if !item.colors.isEmpty {
+                    HStack(spacing: 4) {
+                        ForEach(item.colors.prefix(3), id: \.self) { colorName in
+                            Circle()
+                                .fill(getColor(for: colorName))
+                                .frame(width: 12, height: 12)
+                        }
+                        if item.colors.count > 3 {
+                            Text("+\(item.colors.count - 3)")
+                                .foregroundColor(.gray)
+                                .font(.caption2)
+                        }
+                    }
+                    .padding(.top, 2)
+                }
+                
+                // Category & style
                 HStack {
                     Text(item.category)
                     Text(", \(item.style)")
                 }
                 .font(.subheadline)
                 .foregroundColor(.gray)
-                
                 .padding(8)
                 .background(Color.white)
                 .cornerRadius(12)
             }
         }
-        .buttonStyle(PlainButtonStyle()) // Opsional untuk menghilangkan style tombol default
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    func getColor(for name: String) -> Color {
+        switch name.lowercased() {
+        case "red": return .red
+        case "blue": return .blue
+        case "green": return .green
+        case "black": return .black
+        case "white": return .white
+        case "yellow": return .yellow
+        case "purple": return .purple
+        case "gray": return .gray
+        case "brown": return Color(red: 0.6, green: 0.4, blue: 0.2)
+        default: return .gray
+        }
     }
 }
 
@@ -85,11 +123,11 @@ struct DashboardView: View {
     @State private var searchText = ""
     @State private var selectedFilter = 0
     
-    private var allItems: [WardrobeItem] = PreviewSampleData.createSampleItems()
+    @Query private var items: [WardrobeItem]
     
     // Filtered items based on search text and selected filter
     var filteredItems: [WardrobeItem] {
-        let filtered = allItems.filter { item in
+        let filtered = items.filter { item in
             if searchText.isEmpty {
                 return true
             } else {
@@ -146,17 +184,32 @@ struct DashboardView: View {
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal)
                 
-                // Grid layout
-                ScrollView {
-                    LazyVGrid(columns: [
-                        GridItem(.flexible(), spacing: 16),
-                        GridItem(.flexible(), spacing: 16)
-                    ], spacing: 16) {
-                        ForEach(filteredItems) { item in
-                            ItemCardView(item: item)
-                        }
+                if filteredItems.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "tshirt.fill")
+                            .font(.system(size: 64))
+                            .foregroundColor(.gray)
+                        Text("No items found")
+                            .font(.headline)
+                        Text("Add some clothes to your wardrobe")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.gray.opacity(0.05))
+                } else {
+                    // Grid layout
+                    ScrollView {
+                        LazyVGrid(columns: [
+                            GridItem(.flexible(), spacing: 16),
+                            GridItem(.flexible(), spacing: 16)
+                        ], spacing: 16) {
+                            ForEach(filteredItems) { item in
+                                ItemCardView(item: item)
+                            }
+                        }
+                        .padding()
+                    }
                 }
             }
             .background(Color.gray.opacity(0.05))
@@ -170,12 +223,12 @@ struct DashboardView: View {
 class PreviewSampleData {
     static func createSampleItems() -> [WardrobeItem] {
         [
-            WardrobeItem(name: "Dress Gimana Gitu", category: "Tops", color: "Black", describe: "Cargo style", style: "Formal", type: "Tops", imagePath: "sample1", isAvailable: false),
-            WardrobeItem(name: "Batik Dress Blue Baby", category: "Tops", color: "Beige", describe: "Slim fit", style: "Formal", type: "Tops", imagePath: "sample2", isAvailable: false),
-            WardrobeItem(name: "Batik Tops", category: "Tops", color: "White", describe: "Loose fit", style: "Formal", type: "Tops", imagePath: "sample3"),
-            WardrobeItem(name: "Batik Tops", category: "Tops", color: "Gray", describe: "Cargo style", style: "Formal", type: "Tops", imagePath: "sample4"),
-            WardrobeItem(name: "Batik Tops", category: "Tops", color: "Brown", describe: "Wide leg", style: "Formal", type: "Tops", imagePath: "sample5"),
-            WardrobeItem(name: "Batik Tops", category: "Tops", color: "Black", describe: "Straight cut", style: "Formal", type: "Tops", imagePath: "sample6")
+            WardrobeItem(name: "Dress Gimana Gitu", category: "Tops", colors: ["Black", "White"], describe: "Cargo style", style: "Formal", type: "Tops", imagePath: "sample1", isAvailable: false),
+            WardrobeItem(name: "Batik Dress Blue Baby", category: "Tops", colors: ["Blue", "White"], describe: "Slim fit", style: "Formal", type: "Tops", imagePath: "sample2", isAvailable: false),
+            WardrobeItem(name: "Batik Tops", category: "Tops", colors: ["White", "Brown"], describe: "Loose fit", style: "Formal", type: "Tops", imagePath: "sample3"),
+            WardrobeItem(name: "Batik Tops", category: "Tops", colors: ["Gray", "Black"], describe: "Cargo style", style: "Formal", type: "Tops", imagePath: "sample4"),
+            WardrobeItem(name: "Batik Tops", category: "Tops", colors: ["Brown", "White"], describe: "Wide leg", style: "Formal", type: "Tops", imagePath: "sample5"),
+            WardrobeItem(name: "Batik Tops", category: "Tops", colors: ["Black", "Gray"], describe: "Straight cut", style: "Formal", type: "Tops", imagePath: "sample6")
         ]
     }
 }
@@ -184,7 +237,7 @@ class PreviewSampleData {
     let config = ModelConfiguration(isStoredInMemoryOnly: true)
     let container = try! ModelContainer(for: WardrobeItem.self, configurations: config)
     
-    // Add sample data
+    // Add sample data for preview only
     for item in PreviewSampleData.createSampleItems() {
         container.mainContext.insert(item)
     }

@@ -11,13 +11,13 @@ import SwiftUI
 import SwiftData
 
 class ItemController {
-    func saveItem(context: ModelContext, name: String, category: String, color: String,
+    func saveItem(context: ModelContext, name: String, category: String, colors: [String],
                  describe: String, style: String, imagePath: String, isAvailable: Bool = true) {
         
         let newItem = WardrobeItem(
             name: name,
             category: category,
-            color: color,
+            colors: colors,
             describe: describe,
             style: style,
             type: category,
@@ -34,12 +34,12 @@ class ItemController {
         }
     }
     
-    func updateItem(item: WardrobeItem, name: String, category: String, color: String,
+    func updateItem(item: WardrobeItem, name: String, category: String, colors: [String],
                    describe: String, style: String, imagePath: String?, isAvailable: Bool) {
         
         item.name = name
         item.category = category
-        item.color = color
+        item.colors = colors
         item.describe = describe
         item.style = style
         item.type = category

@@ -22,7 +22,7 @@ struct RadioButtonStyle: ToggleStyle {
 
 // Color Selection View
 struct ColorSelectionView: View {
-    @Binding var selectedColor: String
+    @Binding var selectedColors: [String]
     @Environment(\.dismiss) private var dismiss
     
     let colors: [String: Color] = [
@@ -42,16 +42,19 @@ struct ColorSelectionView: View {
             List {
                 ForEach(Array(colors.keys.sorted()), id: \.self) { colorName in
                     Button(action: {
-                        selectedColor = colorName
-                        dismiss() //this auto close the NavStack after user choose one color
+                        if selectedColors.contains(colorName) {
+                            selectedColors.removeAll { $0 == colorName }
+                        } else {
+                            selectedColors.append(colorName)
+                        }
                     }) {
                         HStack {
                             Circle()
-                                .fill(colors[colorName] ?? .gray) //defaults to gray color in case color not found
+                                .fill(colors[colorName] ?? .gray)
                                 .frame(width: 30, height: 30)
                             Text(colorName)
                             Spacer()
-                            if selectedColor == colorName {
+                            if selectedColors.contains(colorName) {
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.blue)
                             }
@@ -60,11 +63,16 @@ struct ColorSelectionView: View {
                     .foregroundColor(.primary)
                 }
             }
-            .navigationTitle("Select Color")
+            .navigationTitle("Select Colors")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Done") {
                         dismiss()
                     }
                 }
@@ -123,13 +131,19 @@ struct AddItemView: View {
     
     @State private var name = ""
     @State private var type = ""
-    @State private var color = ""
+    @State private var selectedColors: [String] = []
     @State private var style = "Casual" // Default style
     @State private var description = ""
     @State private var isAvailable = true
     @State private var showingTypeSelection = false
     @State private var showingColorSelection = false
-    @State private var image: UIImage? = nil
+    @State private var images: [UIImage] = []
+    @State private var showingImagePicker = false
+    @State private var showingAlert = false
+    @State private var alertMessage = ""
+    @State private var currentImageIndex = 0
+    
+    let styles = ["Casual", "Formal", "Sport", "Homewear", "Party", "Work"]
     
     var body: some View {
         NavigationStack {
@@ -137,39 +151,61 @@ struct AddItemView: View {
                 VStack(spacing: 0) {
                     // Image Upload Area
                     ZStack {
-                        RoundedRectangle(cornerRadius: 12)
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 250)
-                        
-                        if let selectedImage = image {
-                            Image(uiImage: selectedImage)
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 250)
-                                .clipShape(RoundedRectangle(cornerRadius: 12))
-                        } else {
-                            VStack {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.blue.opacity(0.15))
-                                        .frame(width: 60, height: 60)
-                                    
-                                    Image(systemName: "plus")
-                                        .font(.system(size: 30))
-                                        .foregroundColor(.blue)
+                        TabView(selection: $currentImageIndex) {
+                            if images.isEmpty {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(height: 250)
+                                    .overlay {
+                                        VStack {
+                                            ZStack {
+                                                Circle()
+                                                    .fill(Color.blue.opacity(0.15))
+                                                    .frame(width: 60, height: 60)
+                                                
+                                                Image(systemName: "plus")
+                                                    .font(.system(size: 30))
+                                                    .foregroundColor(.blue)
+                                            }
+                                            Text("Add Media")
+                                                .foregroundColor(.blue)
+                                                .font(.subheadline)
+                                                .padding(.top, 4)
+                                        }
+                                    }
+                                    .tag(0)
+                            } else {
+                                ForEach(Array(images.enumerated()), id: \.offset) { index, image in
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fill)
+                                        .frame(height: 250)
+                                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                                        .tag(index)
                                 }
-                                Text("Add Media")
-                                    .foregroundColor(.blue)
-                                    .font(.subheadline)
-                                    .padding(.top, 4)
+                            }
+                        }
+                        .frame(height: 250)
+                        .tabViewStyle(PageTabViewStyle())
+                        
+                        if !images.isEmpty {
+                            VStack {
+                                Spacer()
+                                HStack {
+                                    ForEach(0..<images.count, id: \.self) { index in
+                                        Circle()
+                                            .fill(currentImageIndex == index ? Color.blue : Color.gray)
+                                            .frame(width: 8, height: 8)
+                                    }
+                                }
+                                .padding(.bottom, 8)
                             }
                         }
                     }
                     .padding(.horizontal)
                     .padding(.top)
                     .onTapGesture {
-                        // Would trigger photo picker in a real app
-                        // For now just a placeholder
+                        showingImagePicker = true
                     }
                     
                     VStack(spacing: 0) {
@@ -207,18 +243,27 @@ struct AddItemView: View {
                             showingColorSelection = true
                         }) {
                             HStack {
-                                Text("Color")
+                                Text("Colors")
                                     .fontWeight(.medium)
                                     .foregroundColor(.primary)
                                 Spacer()
-                                if !color.isEmpty {
-                                    Circle()
-                                        .fill(getColor(for: color))
-                                        .frame(width: 16, height: 16)
-                                        .padding(.trailing, 4)
+                                if !selectedColors.isEmpty {
+                                    HStack(spacing: 4) {
+                                        ForEach(selectedColors.prefix(3), id: \.self) { colorName in
+                                            Circle()
+                                                .fill(getColor(for: colorName))
+                                                .frame(width: 16, height: 16)
+                                        }
+                                        if selectedColors.count > 3 {
+                                            Text("+\(selectedColors.count - 3)")
+                                                .foregroundColor(.gray)
+                                                .font(.caption)
+                                        }
+                                    }
+                                    .padding(.trailing, 4)
                                 }
-                                Text(color.isEmpty ? "Select..." : color)
-                                    .foregroundColor(color.isEmpty ? .gray : .primary)
+                                Text(selectedColors.isEmpty ? "Select..." : "\(selectedColors.count) selected")
+                                    .foregroundColor(selectedColors.isEmpty ? .gray : .primary)
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
@@ -233,33 +278,25 @@ struct AddItemView: View {
                                 .fontWeight(.medium)
                                 .padding(.top, 8)
                             
-                            HStack(spacing: 20) {
-                                Toggle(isOn: Binding(
-                                    get: { style == "Casual" },
-                                    set: { if $0 { style = "Casual" } }
-                                )) {
-                                    Text("Casual")
-                                        .fontWeight(.medium)
+                            LazyVGrid(columns: [
+                                GridItem(.flexible()),
+                                GridItem(.flexible()),
+                                GridItem(.flexible())
+                            ], spacing: 12) {
+                                ForEach(styles, id: \.self) { styleOption in
+                                    Button(action: {
+                                        style = styleOption
+                                    }) {
+                                        Text(styleOption)
+                                            .font(.subheadline)
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 12)
+                                            .frame(maxWidth: .infinity)
+                                            .background(style == styleOption ? Color.blue : Color.gray.opacity(0.1))
+                                            .foregroundColor(style == styleOption ? .white : .primary)
+                                            .cornerRadius(8)
+                                    }
                                 }
-                                .toggleStyle(RadioButtonStyle())
-                                
-                                Toggle(isOn: Binding(
-                                    get: { style == "Homewear" },
-                                    set: { if $0 { style = "Homewear" } }
-                                )) {
-                                    Text("Homewear")
-                                        .fontWeight(.medium)
-                                }
-                                .toggleStyle(RadioButtonStyle())
-                                
-                                Toggle(isOn: Binding(
-                                    get: { style == "Formal" },
-                                    set: { if $0 { style = "Formal" } }
-                                )) {
-                                    Text("Formal")
-                                        .fontWeight(.medium)
-                                }
-                                .toggleStyle(RadioButtonStyle())
                             }
                             .padding(.bottom, 8)
                         }
@@ -267,7 +304,7 @@ struct AddItemView: View {
                         
                         // Description Field
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("Describe (optional):")
+                            Text("Description")
                                 .fontWeight(.medium)
                                 .padding(.top, 8)
                             
@@ -287,8 +324,12 @@ struct AddItemView: View {
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        dismiss()
-                        //TODO: should confirm to the user any data filled in this page will not be saved?
+                        if !name.isEmpty || !type.isEmpty || !selectedColors.isEmpty || !images.isEmpty {
+                            showingAlert = true
+                            alertMessage = "Are you sure you want to discard this item? Any changes will be lost."
+                        } else {
+                            dismiss()
+                        }
                     }) {
                         Image(systemName: "chevron.left")
                         Text("Dashboard")
@@ -297,41 +338,83 @@ struct AddItemView: View {
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        let newItem = WardrobeItem(
-                            name: name,
-                            category: type,
-                            color: color,
-                            describe: description,
-                            style: style,
-                            type: type,
-                            imagePath: "placeholder_image",
-                            isAvailable: true
-                        )
-                        
-                        modelContext.insert(newItem)
-                        dismiss()
+                        saveItem()
                     }
-                    .foregroundColor(name.isEmpty || type.isEmpty || color.isEmpty ? .gray : .blue)
-                    .disabled(name.isEmpty || type.isEmpty || color.isEmpty) //TODO: should alert the user which field isn't filled yet instead? Also don't forget to add photo checking as well.
+                    .foregroundColor(canSave ? .blue : .gray)
+                    .disabled(!canSave)
                 }
             }
             .sheet(isPresented: $showingTypeSelection) {
                 TypeSelectionView(selectedType: $type)
             }
             .sheet(isPresented: $showingColorSelection) {
-                ColorSelectionView(selectedColor: $color)
+                ColorSelectionView(selectedColors: $selectedColors)
+            }
+            .sheet(isPresented: $showingImagePicker) {
+                ImagePicker(selectedImages: $images)
+            }
+            .alert(alertMessage, isPresented: $showingAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Discard", role: .destructive) {
+                    dismiss()
+                }
             }
         }
     }
     
-    // Helper function to convert color name to Color
+    private var canSave: Bool {
+        !name.isEmpty && !type.isEmpty && !selectedColors.isEmpty && !images.isEmpty
+    }
+    
+    private func saveItem() {
+        var imagePaths: [String] = []
+        
+        // Save all images
+        for image in images {
+            if let imagePath = ImageManager.shared.saveImage(image) {
+                imagePaths.append(imagePath)
+            }
+        }
+        
+        guard !imagePaths.isEmpty else {
+            showingAlert = true
+            alertMessage = "Failed to save images. Please try again."
+            return
+        }
+        
+        let newItem = WardrobeItem(
+            name: name,
+            category: type,
+            colors: selectedColors,
+            describe: description,
+            style: style,
+            type: type,
+            imagePath: imagePaths.joined(separator: ","), // Store multiple paths separated by comma
+            isAvailable: true
+        )
+        
+        modelContext.insert(newItem)
+        
+        do {
+            try modelContext.save()
+            dismiss()
+        } catch {
+            showingAlert = true
+            alertMessage = "Failed to save item. Please try again."
+            // Clean up the saved images if item saving fails
+            for path in imagePaths {
+                ImageManager.shared.deleteImage(at: path)
+            }
+        }
+    }
+    
     func getColor(for name: String) -> Color {
         switch name.lowercased() {
-        case "black": return .black
-        case "white": return .white
         case "red": return .red
         case "blue": return .blue
         case "green": return .green
+        case "black": return .black
+        case "white": return .white
         case "yellow": return .yellow
         case "purple": return .purple
         case "gray": return .gray
