@@ -51,10 +51,11 @@ struct DetailItemView: View {
                 
                 RoundedRectangle(cornerRadius: 20)
                     .frame(width: 50, height: 24)
-                    .foregroundColor(.gray.opacity(0.3))
+                    .shadow(color: .gray, radius: 4)
+                    .foregroundColor(.white.opacity(1))
                     .overlay(Circle().frame(width: 10, height: 10).foregroundColor(.black))
                     .padding(.top, -8)
-
+                
                 VStack(spacing: 4) {
                     Text(item.name)
                         .font(.title2)
@@ -71,25 +72,21 @@ struct DetailItemView: View {
                 VStack(alignment: .leading){
                     HStack {
                         tagView(item.category)
-                        tagView(item.color)
                         tagView(item.style)
                     }
                     .padding(.horizontal)
                 }
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Description")
-                        .font(.headline)
-                    ZStack(alignment: Alignment (horizontal: .leading, vertical: .top)){
-                        RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                            .foregroundStyle(.gray.opacity(0.3))
+                GroupBox(label: Text("Description")) {
+                    VStack(alignment: .leading){
                         Text(item.describe)
                             .foregroundStyle(Color.black)
-                            .padding(.top)
-                            .padding(.leading)
-                    }.frame(height: 120)
+                            .frame(height: 120)
+                            .padding(.leading, -30)
+                            .padding(.top, -30)
+                    }
                 }
-                .padding(.horizontal)
+                .frame(width: 370)
+                .cornerRadius(25.0, corners: .allCorners)
                 HStack(spacing: 12) {
                     statusButton(icon: "checkmark", label: "Available")
                     statusButton(icon: "hanger", label: "Laundry")
