@@ -7,12 +7,34 @@ struct ImagePicker: UIViewControllerRepresentable {
     @Environment(\.dismiss) private var dismiss
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
-        var config = PHPickerConfiguration(photoLibrary: .shared())
-        config.selectionLimit = 5 // Allow up to 5 images
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 10 // Allow multiple selection up to 10 images
         config.filter = .images
         
         let picker = PHPickerViewController(configuration: config)
         picker.delegate = context.coordinator
+        
+        // Check photo library permission
+        PHPhotoLibrary.requestAuthorization(for: .readWrite) { status in
+            DispatchQueue.main.async {
+                switch status {
+                case .limited:
+                    print("Limited access granted")
+                case .denied, .restricted:
+                    // Handle denied access
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                case .authorized:
+                    print("Full access granted")
+                case .notDetermined:
+                    print("Permission not determined yet")
+                @unknown default:
+                    break
+                }
+            }
+        }
+        
         return picker
     }
     
@@ -30,28 +52,25 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         
         func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-            parent.selectedImages.removeAll()
+            parent.dismiss()
             
-            let group = DispatchGroup()
+            guard !results.isEmpty else { return }
             
             for result in results {
-                group.enter()
                 if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
                     result.itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+                        if let error = error {
+                            print("Error loading image: \(error.localizedDescription)")
+                            return
+                        }
+                        
                         if let image = image as? UIImage {
                             DispatchQueue.main.async {
                                 self.parent.selectedImages.append(image)
                             }
                         }
-                        group.leave()
                     }
-                } else {
-                    group.leave()
                 }
-            }
-            
-            group.notify(queue: .main) {
-                self.parent.dismiss()
             }
         }
     }
