@@ -15,24 +15,38 @@ struct DetailItemView: View {
         ScrollView {
             VStack(spacing: 16) {
                 ZStack(alignment: .topTrailing) {
-                    if let image = UIImage(contentsOfFile: item.imagePath) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        Color.gray.frame(height: 250)
-                        ProgressView("Loading...")
+                    ZStack {
+                        if let uiImage = UIImage(contentsOfFile: item.imagePath) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                        } else if UIImage(named: item.imagePath) != nil {
+                            Image(item.imagePath) // Loads from assets
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            ZStack {
+                                Color.gray.frame(height: 250)
+                                ProgressView("Loading...")
+                                    .progressViewStyle(CircularProgressViewStyle())
+                            }
+                        }
                     }
                     
-                    Button("Edit") {
-                        // action edit handler
+                    Button(action: {
+                        // edit action
+                    }) {
+                        Text("Edit")
+                            .font(.subheadline)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 6)
+                            .background(.ultraThickMaterial)
+                            .clipShape(Capsule())
                     }
-                    .padding(.trailing, 16)
-                    .padding(.top, 8)
-                    .foregroundColor(.gray)
-                    .background(.ultraThinMaterial)
-                    .clipShape(Capsule())
+                    .padding(12)
+                    .foregroundColor(.primary)
                 }
                 
                 RoundedRectangle(cornerRadius: 20)
@@ -53,14 +67,16 @@ struct DetailItemView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal)
-
-                HStack {
-                    tagView(item.category)
-                    tagView(item.color)
-                    tagView(item.style)
+                
+                VStack(alignment: .leading){
+                    HStack {
+                        tagView(item.category)
+                        tagView(item.color)
+                        tagView(item.style)
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
-
+                
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Description")
                         .font(.headline)
@@ -71,30 +87,14 @@ struct DetailItemView: View {
                             .foregroundStyle(Color.white)
                             .padding(.top)
                             .padding(.leading)
-                    }.frame(height: 150)
+                    }.frame(height: 120)
                 }
                 .padding(.horizontal)
-                HStack(spacing: 16) {
-                    statusButton(icon: "checkmark", label: "Available", isSelected: item.isAvailable, color: .blue) {
-                        selectedStatus = "Available"
-                        showConfirmation = true
-                        
-                    }
-                    statusButton(icon: "hanger", label: "Laundry", isSelected: false, color: .gray) {
-                        selectedStatus = "Laundry"
-                        showConfirmation = true
-                        
-                    }
-                    statusButton(icon: "tshirt.fill", label: "Use", isSelected: false, color: .gray) {
-                        selectedStatus = "Use"
-                        showConfirmation = true
-                        
-                    }
-                    statusButton(icon: "scissors", label: "Repair", isSelected: false, color: .gray) {
-                        selectedStatus = "Repair"
-                        showConfirmation = true
-                        
-                    }
+                HStack(spacing: 12) {
+                    statusButton(icon: "checkmark", label: "Available")
+                    statusButton(icon: "hanger", label: "Laundry")
+                    statusButton(icon: "tshirt.fill", label: "Use")
+                    statusButton(icon: "scissors", label: "Repair")
                 }
                 .padding(.horizontal)
                 .padding(.bottom)
@@ -121,36 +121,50 @@ struct DetailItemView: View {
             .cornerRadius(12)
     }
     
-    private func statusButton(icon: String, label: String, isSelected: Bool, color: Color, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 4) {
+    private func statusButton(icon: String, label: String) -> some View {
+        let isSelected = selectedStatus == label
+        let buttonColor = isSelected ? Color.blue : Color.gray.opacity(0.3)
+        
+        return Button(action: {
+            selectedStatus = label
+            showConfirmation = true
+        }) {
+            HStack {
                 Image(systemName: icon)
                     .foregroundColor(.white)
-                    .padding()
-                    .background(isSelected ? color : Color.gray)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
                 
-                Text(label)
-                    .font(.caption)
-                    .foregroundColor(.primary)
+                if isSelected {
+                    Text(label)
+                        .foregroundColor(.white)
+                        .font(.subheadline)
+                        .padding(.trailing, 4)
+                }
             }
+            .padding(.vertical, 12)
+            .padding(.horizontal, isSelected ? 20 : 16)
+            .background(buttonColor)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
         }
     }
     
     private func applyStatusChange() {
         switch selectedStatus {
         case "Available":
+            item.isAvailable = true
             controller.markItemAsAvailable(item: item)
         case "Laundry":
+            item.isAvailable = false
             controller.handleLaundry(item: item)
         case "Use":
+            item.isAvailable = false
             controller.handleWear(item: item)
         case "Repair":
+            item.isAvailable = false
             controller.handleRepair(item: item)
         default:
             break
         }
-        
+
         do {
             try context.save()
             dismiss()
@@ -170,7 +184,7 @@ struct DetailItemView: View {
         describe: "Jeans, Coulotte, Long, Oversized, Uniqlo",
         style: "Casual",
         type: "Bottom",
-        imagePath: "",
+        imagePath: "kulot",
         isAvailable: true
     )
 
