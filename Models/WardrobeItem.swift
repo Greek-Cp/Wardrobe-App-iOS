@@ -1,6 +1,12 @@
 import Foundation
 import SwiftData
 
+enum ItemStatus: String, Codable {
+    case available = "Available"
+    case unavailable = "Unavailable"
+    case rarelyUsed = "Rarely Used"
+}
+
 @Model
 class WardrobeItem {
     var id: UUID
@@ -12,13 +18,13 @@ class WardrobeItem {
     var dateAdded: Date
     var type: String
     var imagePath: String
-    var isAvailable: Bool = true
+    var status: String = ItemStatus.available.rawValue
     
     var imagePaths: [String] {
         imagePath.split(separator: ",").map(String.init)
     }
     
-    init(name: String, category: String, colors: [String], describe: String, style: String, type: String, imagePath: String, isAvailable: Bool = true) {
+    init(name: String, category: String, colors: [String], describe: String, style: String, type: String, imagePath: String, status: String = ItemStatus.available.rawValue) {
         self.id = UUID()
         self.name = name
         self.category = category
@@ -28,6 +34,6 @@ class WardrobeItem {
         self.describe = describe
         self.style = style
         self.imagePath = imagePath
-        self.isAvailable = isAvailable
+        self.status = status
     }
 }

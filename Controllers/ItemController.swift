@@ -12,7 +12,7 @@ import SwiftData
 
 class ItemController {
     func saveItem(context: ModelContext, name: String, category: String, colors: [String],
-                 describe: String, style: String, imagePath: String, isAvailable: Bool = true) {
+                 describe: String, style: String, imagePath: String, status: String = ItemStatus.available.rawValue) {
         
         let newItem = WardrobeItem(
             name: name,
@@ -22,7 +22,7 @@ class ItemController {
             style: style,
             type: category,
             imagePath: imagePath,
-            isAvailable: isAvailable
+            status: status
         )
         
         context.insert(newItem)
@@ -35,7 +35,7 @@ class ItemController {
     }
     
     func updateItem(item: WardrobeItem, name: String, category: String, colors: [String],
-                   describe: String, style: String, imagePath: String?, isAvailable: Bool) {
+                   describe: String, style: String, imagePath: String?, status: String) {
         
         item.name = name
         item.category = category
@@ -48,15 +48,19 @@ class ItemController {
             item.imagePath = imagePath
         }
         
-        item.isAvailable = isAvailable
+        item.status = status
     }
     
     func markItemAsUnavailable(item: WardrobeItem) {
-        item.isAvailable = false
+        item.status = ItemStatus.unavailable.rawValue
     }
     
     func markItemAsAvailable(item: WardrobeItem) {
-        item.isAvailable = true
+        item.status = ItemStatus.available.rawValue
+    }
+    
+    func markItemAsRarelyUsed(item: WardrobeItem) {
+        item.status = ItemStatus.rarelyUsed.rawValue
     }
     
     func handleWear(item: WardrobeItem) {

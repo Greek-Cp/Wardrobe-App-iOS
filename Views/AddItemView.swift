@@ -390,7 +390,7 @@ struct AddItemView: View {
             style: style,
             type: type,
             imagePath: imagePaths.joined(separator: ","), // Store multiple paths separated by comma
-            isAvailable: true
+            status: ItemStatus.available.rawValue    
         )
         
         modelContext.insert(newItem)
