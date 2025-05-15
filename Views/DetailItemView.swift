@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 struct DetailItemView: View {
     @Environment(\.dismiss) private var dismiss
@@ -16,6 +17,8 @@ struct DetailItemView: View {
     @State private var editedDescription = ""
     @State private var editedImages: [UIImage] = []
     @State private var showingImagePicker = false
+    @State private var showingCamera = false
+    @State private var showingImageOptions = false
     @State private var showingTypeSelection = false
     @State private var showingColorSelection = false
     @State private var showingAlert = false
@@ -68,7 +71,7 @@ struct DetailItemView: View {
                             .frame(height: 300)
                             .tabViewStyle(PageTabViewStyle())
                             .onTapGesture {
-                                showingImagePicker = true
+                                showingImageOptions = true
                             }
                         }
                     } else {
@@ -289,6 +292,17 @@ struct DetailItemView: View {
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(selectedImages: $editedImages)
         }
+        .sheet(isPresented: $showingCamera) {
+            CameraView(image: $editedImages) { result in
+                switch result {
+                case .success(let image):
+                    editedImages.append(image)
+                case .failure(let error):
+                    alertMessage = error.localizedDescription
+                    showingAlert = true
+                }
+            }
+        }
         .sheet(isPresented: $showingTypeSelection) {
             TypeSelectionView(selectedType: $editedType)
         }
@@ -297,6 +311,15 @@ struct DetailItemView: View {
         }
         .alert(alertMessage, isPresented: $showingAlert) {
             Button("OK", role: .cancel) { }
+        }
+        .confirmationDialog("Choose Image Source", isPresented: $showingImageOptions, titleVisibility: .visible) {
+            Button("Take Photo") {
+                showingCamera = true
+            }
+            Button("Choose from Library") {
+                showingImagePicker = true
+            }
+            Button("Cancel", role: .cancel) {}
         }
         .onAppear {
             // Set initial selected action based on current status
@@ -455,25 +478,7 @@ struct DetailItemView: View {
     }
 }
 
-#Preview {
-    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-    let container = try! ModelContainer(for: WardrobeItem.self, configurations: config)
 
-    let sampleItem = WardrobeItem(
-        name: "Jeans Culottes",
-        category: "Bottoms",
-        colors: ["Blue", "Black"],
-        describe: "Jeans, Coulotte, Long, Oversized, Uniqlo",
-        style: "Casual",
-        type: "Bottom",
-        imagePath: "kulot,kulot2,kulot3",
-        status: ItemStatus.available.rawValue
-    )
-
-    container.mainContext.insert(sampleItem)
-
-    return NavigationView {
-        DetailItemView(item: sampleItem)
-    }
-    .modelContainer(container)
-}
+//#Preview {
+//    DetailItemView(item: WardrobeItem.preview)
+//}

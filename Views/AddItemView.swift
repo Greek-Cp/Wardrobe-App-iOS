@@ -139,6 +139,8 @@ struct AddItemView: View {
     @State private var showingColorSelection = false
     @State private var images: [UIImage] = []
     @State private var showingImagePicker = false
+    @State private var showingCamera = false
+    @State private var showingImageOptions = false
     @State private var showingAlert = false
     @State private var alertMessage = ""
     @State private var currentImageIndex = 0
@@ -205,7 +207,7 @@ struct AddItemView: View {
                     .padding(.horizontal)
                     .padding(.top)
                     .onTapGesture {
-                        showingImagePicker = true
+                        showingImageOptions = true
                     }
                     
                     VStack(spacing: 0) {
@@ -353,11 +355,28 @@ struct AddItemView: View {
             .sheet(isPresented: $showingImagePicker) {
                 ImagePicker(selectedImages: $images)
             }
-            .alert(alertMessage, isPresented: $showingAlert) {
-                Button("Cancel", role: .cancel) { }
-                Button("Discard", role: .destructive) {
-                    dismiss()
+            .sheet(isPresented: $showingCamera) {
+                CameraView(image: $images) { result in
+                    switch result {
+                    case .success(let image):
+                        images.append(image)
+                    case .failure(let error):
+                        alertMessage = error.localizedDescription
+                        showingAlert = true
+                    }
                 }
+            }
+            .confirmationDialog("Choose Image Source", isPresented: $showingImageOptions, titleVisibility: .visible) {
+                Button("Take Photo") {
+                    showingCamera = true
+                }
+                Button("Choose from Library") {
+                    showingImagePicker = true
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            .alert(alertMessage, isPresented: $showingAlert) {
+                Button("OK", role: .cancel) { }
             }
         }
     }
@@ -423,6 +442,7 @@ struct AddItemView: View {
         }
     }
 }
+
 #Preview {
     AddItemView()
 }
