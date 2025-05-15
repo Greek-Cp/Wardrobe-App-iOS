@@ -42,7 +42,7 @@ struct DetailItemView: View {
                             .font(.subheadline)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
-                            .background(.ultraThinMaterial)
+                            .background(.ultraThickMaterial)
                             .clipShape(Capsule())
                     }
                     .padding(12)
@@ -67,14 +67,16 @@ struct DetailItemView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .padding(.horizontal)
-
-                HStack {
-                    tagView(item.category)
-                    tagView(item.color)
-                    tagView(item.style)
+                
+                VStack(alignment: .leading){
+                    HStack {
+                        tagView(item.category)
+                        tagView(item.color)
+                        tagView(item.style)
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
-
+                
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Description")
                         .font(.headline)
