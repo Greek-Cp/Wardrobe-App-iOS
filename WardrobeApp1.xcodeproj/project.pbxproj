@@ -31,6 +31,7 @@
 		04A775022DD2D69D000CD1B4 /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775012DD2D69D000CD1B4 /* ItemController.swift */; };
 		04A775242DD584EB000CD1B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775232DD584EB000CD1B4 /* ImagePicker.swift */; };
 		04A775282DD58538000CD1B4 /* ImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775272DD58538000CD1B4 /* ImageManager.swift */; };
+		04A7752C2DD5A14B000CD1B4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A7752B2DD5A14B000CD1B4 /* CameraView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,7 @@
 		04A775012DD2D69D000CD1B4 /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
 		04A775232DD584EB000CD1B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		04A775272DD58538000CD1B4 /* ImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageManager.swift; sourceTree = "<group>"; };
+		04A7752B2DD5A14B000CD1B4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 				0400D3FE2DCC7A99006E752C /* CustomButton.swift */,
 				0400D3FF2DCC7A99006E752C /* ItemCell.swift */,
 				04A775232DD584EB000CD1B4 /* ImagePicker.swift */,
+				04A7752B2DD5A14B000CD1B4 /* CameraView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				0400D40B2DCC7A99006E752C /* Extensions.swift in Sources */,
 				0400D4102DCC7A99006E752C /* ItemCell.swift in Sources */,
 				0400D40D2DCC7A99006E752C /* DetailController.swift in Sources */,
+				04A7752C2DD5A14B000CD1B4 /* CameraView.swift in Sources */,
 				0400D4132DCC7A99006E752C /* EditItemView.swift in Sources */,
 				0400D40C2DCC7A99006E752C /* DashboardController.swift in Sources */,
 				04A775282DD58538000CD1B4 /* ImageManager.swift in Sources */,
