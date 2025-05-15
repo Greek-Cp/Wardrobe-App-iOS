@@ -54,7 +54,7 @@ struct DetailItemView: View {
                     .shadow(color: .gray, radius: 4)
                     .foregroundColor(.white.opacity(1))
                     .overlay(Circle().frame(width: 10, height: 10).foregroundColor(.black))
-                    .padding(.top, -8)
+                    .padding(.top, -5)
                 
                 VStack(spacing: 4) {
                     Text(item.name)
