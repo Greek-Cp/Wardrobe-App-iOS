@@ -20,12 +20,12 @@ struct DetailItemView: View {
                             Image(uiImage: uiImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         } else if UIImage(named: item.imagePath) != nil {
-                            Image(item.imagePath) // Loads from assets
+                            Image(item.imagePath)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
                         } else {
                             ZStack {
                                 Color.gray.frame(height: 250)
@@ -51,7 +51,7 @@ struct DetailItemView: View {
                 
                 RoundedRectangle(cornerRadius: 20)
                     .frame(width: 50, height: 24)
-                    .foregroundColor(.white.opacity(0.9))
+                    .foregroundColor(.gray.opacity(0.3))
                     .overlay(Circle().frame(width: 10, height: 10).foregroundColor(.black))
                     .padding(.top, -8)
 
@@ -61,7 +61,7 @@ struct DetailItemView: View {
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    Text("Laundry : 17 May 2025")
+                    Text("Laundry : 15 May 2025")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -82,9 +82,9 @@ struct DetailItemView: View {
                         .font(.headline)
                     ZStack(alignment: Alignment (horizontal: .leading, vertical: .top)){
                         RoundedRectangle(cornerRadius: /*@START_MENU_TOKEN@*/25.0/*@END_MENU_TOKEN@*/)
-                            .foregroundStyle(.gray)
+                            .foregroundStyle(.gray.opacity(0.3))
                         Text(item.describe)
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(Color.black)
                             .padding(.top)
                             .padding(.leading)
                     }.frame(height: 120)
