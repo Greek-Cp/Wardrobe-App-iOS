@@ -1,6 +1,31 @@
 import SwiftUI
 import SwiftData
 
+import SwiftUI
+
+struct CustomSegmentedControl: View {
+    let segments: [String]
+    @Binding var selectedIndex: Int
+
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(segments.indices, id: \.self) { index in
+                Button(action: {
+                    selectedIndex = index
+                }) {
+                    Text(segments[index])
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(selectedIndex == index ? .white : .gray)
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 16)
+                        .background(selectedIndex == index ?
+                            Color(red: 146/255, green: 198/255, blue: 164/255) : Color.gray.opacity(0.1))                        .cornerRadius(20)
+                }
+            }
+        }
+    }
+}
+
 struct SearchBarViewApp: View {
     @Binding var text: String
     
@@ -38,7 +63,7 @@ struct ItemCardView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 120)
+                            .frame(height: 130)
                             .clipped()
                     } else {
                         Rectangle()
@@ -55,7 +80,7 @@ struct ItemCardView: View {
                             )
                     }
                 }
-                .frame(height: 120)
+                .frame(height: 130)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 
                 // Content container
@@ -79,25 +104,25 @@ struct ItemCardView: View {
                     }
                     
                     // Colors
-                    if !item.colors.isEmpty {
-                        HStack(spacing: 4) {
-                            ForEach(item.colors.prefix(3), id: \.self) { colorName in
-                                Circle()
-                                    .fill(getColor(for: colorName))
-                                    .frame(width: 10, height: 10)
-                                    .overlay(
-                                        Circle()
-                                            .stroke(Color.white, lineWidth: 1)
-                                    )
-                            }
-                            if item.colors.count > 3 {
-                                Text("+\(item.colors.count - 3)")
-                                    .foregroundColor(.gray)
-                                    .font(.caption2)
-                                    .padding(.leading, 2)
-                            }
-                        }
-                    }
+//                    if !item.colors.isEmpty {
+//                        HStack(spacing: 4) {
+//                            ForEach(item.colors.prefix(3), id: \.self) { colorName in
+//                                Circle()
+//                                    .fill(getColor(for: colorName))
+//                                    .frame(width: 10, height: 10)
+//                                    .overlay(
+//                                        Circle()
+//                                            .stroke(Color.white, lineWidth: 1)
+//                                    )
+//                            }
+//                            if item.colors.count > 3 {
+//                                Text("+\(item.colors.count - 3)")
+//                                    .foregroundColor(.gray)
+//                                    .font(.caption2)
+//                                    .padding(.leading, 2)
+//                            }
+//                        }
+//                    }
                     
                     // Category and style
                     HStack {
@@ -211,12 +236,13 @@ struct DashboardView: View {
                     Text("My Wardrobe")
                         .font(.largeTitle)
                         .fontWeight(.bold)
+                        .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
                     
                     Spacer()
                     
                     NavigationLink(destination: AddItemView()) {
                         Text("Add")
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
                             .font(.headline)
                     }
                 }
@@ -228,14 +254,11 @@ struct DashboardView: View {
                     .padding(.vertical, 8)
                 
                 // Filter tabs
-                Picker("Filter", selection: $dashboardController.selectedFilter) {
-                    Text("All").tag(0)
-                    Text("Available").tag(1)
-                    Text("Unavailable").tag(2)
-                    Text("Rarely Used").tag(3)
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .padding(.horizontal)
+                CustomSegmentedControl(
+                                    segments: ["All", "Available", "Unavailable", "Rarely"],
+                                    selectedIndex: $dashboardController.selectedFilter
+                                )
+                                .padding(.vertical, 8)
                 
                 if filteredItems.isEmpty {
                     VStack(spacing: 16) {
