@@ -6,12 +6,15 @@ struct ContentView: View {
     
     var body: some View {
         // Panggil DashboardView dari struktur MVC kita
-        DashboardView()
+        DashboardView(modelContext: modelContext)
     }
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: WardrobeItem.self, inMemory: true)
+    let config = ModelConfiguration(isStoredInMemoryOnly: true)
+    let container = try! ModelContainer(for: WardrobeItem.self, configurations: config)
+    
+    return ContentView()
+        .modelContainer(container)
 }
 

@@ -238,13 +238,19 @@ struct DetailItemView: View {
                             Text("Status: ")
                                 .foregroundColor(.gray)
                             if let lastAction = controller.getLastAction(for: item) {
-                                VStack(alignment: .leading) {
+                                if lastAction == ItemAction.available.rawValue {
                                     Text(lastAction)
-                                        .foregroundColor(item.status == ItemStatus.available.rawValue ? .green : .red)
+                                        .foregroundColor(.green)
                                         .fontWeight(.medium)
-                                    Text(controller.getFormattedLastActionDate(for: item))
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
+                                } else {
+                                    VStack(alignment: .leading) {
+                                        Text(lastAction)
+                                            .foregroundColor(.red)
+                                            .fontWeight(.medium)
+                                        Text(controller.getFormattedLastActionDate(for: item))
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             } else {
                                 Text(item.status)

@@ -62,13 +62,20 @@ class ItemController {
         }
     }
     
-    private func updateItemStatus(item: WardrobeItem, action: String) {
+    func updateItemStatus(item: WardrobeItem, action: String) {
         let now = Date()
         item.lastActionDate = now
         item.lastAction = action
         
         if action == ItemAction.use.rawValue {
             item.lastUsed = now
+        }
+        
+        // Update status based on action
+        if action == ItemAction.available.rawValue {
+            item.status = ItemStatus.available.rawValue
+        } else {
+            item.status = ItemStatus.unavailable.rawValue
         }
     }
     
@@ -77,7 +84,6 @@ class ItemController {
     }
     
     func markItemAsAvailable(item: WardrobeItem) {
-        item.status = ItemStatus.available.rawValue
         updateItemStatus(item: item, action: ItemAction.available.rawValue)
     }
     
@@ -86,17 +92,14 @@ class ItemController {
     }
     
     func handleWear(item: WardrobeItem) {
-        item.status = ItemStatus.unavailable.rawValue
         updateItemStatus(item: item, action: ItemAction.use.rawValue)
     }
     
     func handleLaundry(item: WardrobeItem) {
-        item.status = ItemStatus.unavailable.rawValue
         updateItemStatus(item: item, action: ItemAction.laundry.rawValue)
     }
     
     func handleRepair(item: WardrobeItem) {
-        item.status = ItemStatus.unavailable.rawValue
         updateItemStatus(item: item, action: ItemAction.repair.rawValue)
     }
     

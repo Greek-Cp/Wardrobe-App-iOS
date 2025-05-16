@@ -24,6 +24,7 @@ struct SearchBarViewApp: View {
 struct ItemCardView: View {
     let item: WardrobeItem
     @Environment(\.modelContext) private var modelContext
+    private let controller = ItemController()
     
     var body: some View {
         NavigationLink(destination: DetailItemView(item: item)) {
@@ -149,7 +150,7 @@ struct ItemCardView: View {
     }
     
     private func updateItemStatus(_ status: ItemStatus) {
-        item.status = status.rawValue
+        controller.updateItemStatus(item: item, action: status.rawValue)
         do {
             try modelContext.save()
         } catch {
@@ -175,35 +176,20 @@ struct ItemCardView: View {
 
 struct DashboardView: View {
     @Environment(\.modelContext) private var modelContext
+    @StateObject private var dashboardController: DashboardController
     @Query private var items: [WardrobeItem]
-    @State private var searchText = ""
-    @State private var selectedFilter = 0
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
     
+    init(modelContext: ModelContext) {
+        _dashboardController = StateObject(wrappedValue: DashboardController(modelContext: modelContext))
+    }
+    
     private var filteredItems: [WardrobeItem] {
-        let filtered = items.filter { item in
-            if searchText.isEmpty {
-                return true
-            } else {
-                return item.name.lowercased().contains(searchText.lowercased()) ||
-                       item.category.lowercased().contains(searchText.lowercased())
-            }
-        }
-        
-        switch selectedFilter {
-        case 1: // Available
-            return filtered.filter { $0.status == ItemStatus.available.rawValue }
-        case 2: // Unavailable
-            return filtered.filter { $0.status == ItemStatus.unavailable.rawValue }
-        case 3: // Rarely Used
-            return filtered.filter { $0.status == ItemStatus.rarelyUsed.rawValue }
-        default: // All
-            return filtered
-        }
+        dashboardController.getFilteredItems(items: items)
     }
     
     var body: some View {
@@ -227,11 +213,11 @@ struct DashboardView: View {
                 .padding(.top)
                 
                 // Search bar
-                SearchBarViewApp(text: $searchText)
+                SearchBarViewApp(text: $dashboardController.searchText)
                     .padding(.vertical, 8)
                 
                 // Filter tabs
-                Picker("Filter", selection: $selectedFilter) {
+                Picker("Filter", selection: $dashboardController.selectedFilter) {
                     Text("All").tag(0)
                     Text("Available").tag(1)
                     Text("Unavailable").tag(2)
@@ -265,6 +251,9 @@ struct DashboardView: View {
                 }
             }
             .background(Color.gray.opacity(0.05))
+            .onAppear {
+                dashboardController.items = items
+            }
         }
     }
 }
@@ -294,6 +283,6 @@ class PreviewSampleData {
         container.mainContext.insert(item)
     }
     
-    return DashboardView()
+    return DashboardView(modelContext: container.mainContext)
         .modelContainer(container)
 }
