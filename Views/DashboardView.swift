@@ -1,8 +1,5 @@
 import SwiftUI
-
-import Foundation
 import SwiftData
-import SwiftUI
 
 struct SearchBarViewApp: View {
     @Binding var text: String
@@ -24,9 +21,9 @@ struct SearchBarViewApp: View {
     }
 }
 
-
 struct ItemCardView: View {
     let item: WardrobeItem
+    @Environment(\.modelContext) private var modelContext
     
     var body: some View {
         NavigationLink(destination: DetailItemView(item: item)) {
@@ -118,12 +115,49 @@ struct ItemCardView: View {
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .frame(height: 200) // Fixed total height for consistency
+            .frame(height: 200)
         }
         .buttonStyle(PlainButtonStyle())
+        .contextMenu {
+            Button(role: .destructive) {
+                deleteItem()
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+            
+            Button {
+                updateItemStatus(.available)
+            } label: {
+                Label("Mark Available", systemImage: "checkmark.circle")
+            }
+            
+            Button {
+                updateItemStatus(.unavailable)
+            } label: {
+                Label("Mark Unavailable", systemImage: "xmark.circle")
+            }
+        }
     }
     
-    func getColor(for name: String) -> Color {
+    private func deleteItem() {
+        modelContext.delete(item)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to delete item: \(error)")
+        }
+    }
+    
+    private func updateItemStatus(_ status: ItemStatus) {
+        item.status = status.rawValue
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to update item status: \(error)")
+        }
+    }
+    
+    private func getColor(for name: String) -> Color {
         switch name.lowercased() {
         case "black": return .black
         case "white": return .white
@@ -140,18 +174,17 @@ struct ItemCardView: View {
 }
 
 struct DashboardView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var items: [WardrobeItem]
     @State private var searchText = ""
     @State private var selectedFilter = 0
-    
-    @Query private var items: [WardrobeItem]
     
     private let gridColumns = [
         GridItem(.flexible(), spacing: 16),
         GridItem(.flexible(), spacing: 16)
     ]
     
-    // Filtered items based on search text and selected filter
-    var filteredItems: [WardrobeItem] {
+    private var filteredItems: [WardrobeItem] {
         let filtered = items.filter { item in
             if searchText.isEmpty {
                 return true
@@ -225,7 +258,6 @@ struct DashboardView: View {
                         LazyVGrid(columns: gridColumns, spacing: 16) {
                             ForEach(filteredItems) { item in
                                 ItemCardView(item: item)
-                                    // Remove frame constraint here to use the one in ItemCardView
                             }
                         }
                         .padding(16)
@@ -236,6 +268,7 @@ struct DashboardView: View {
         }
     }
 }
+
 // Add Item View
 
 // Sample data provider for preview

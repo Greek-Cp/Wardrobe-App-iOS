@@ -1,89 +1,104 @@
 import Foundation
 import SwiftData
+import SwiftUI
+import Combine
 
-class DashboardController {
+class DashboardController: ObservableObject {
+    private var modelContext: ModelContext
+    private var cancellables = Set<AnyCancellable>()
+    
+    // State properties
+    @Published var searchText: String = ""
+    @Published var selectedFilter: Int = 0
+    @Published var items: [WardrobeItem] = []
+    
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        
+        // Setup publishers for state changes
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+        
+        $selectedFilter
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
+    }
+    
+    // Get all items
     func fetchItems() -> [WardrobeItem] {
-           // Dummy data for demo
-           return [
-               WardrobeItem(
-                   name: "Blue Shirt",
-                   category: "Tops",
-                   colors: ["Blue", "White"],
-                   describe: "A stylish blue shirt, perfect for casual outings.",
-                   style: "Casual",
-                   type: "Cotton",
-                   imagePath: "blue_shirt_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Black Jeans",
-                   category: "Bottoms",
-                   colors: ["Black", "Gray"],
-                    describe: "Slim fit black jeans that go well with almost any top.",
-                   style: "Casual",
-                   type: "Denim",
-                   imagePath: "black_jeans_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Red Dress",
-                   category: "Dresses",
-                   colors: ["Red", "Black"],
-                   describe: "A bright red dress, perfect for formal events.",
-                   style: "Formal",
-                   type: "Silk",
-                   imagePath: "red_dress_image"
-               ),
-               
-               WardrobeItem(
-                   name: "White Sneakers",
-                   category: "Shoes",
-                   colors: ["White", "Gray"],
-                   describe: "Comfortable white sneakers for all-day wear.",
-                   style: "Casual",
-                   type: "Leather",
-                   imagePath: "white_sneakers_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Black Jacket",
-                   category: "Outerwear",
-                   colors: ["Black"],
-                   describe: "A sleek black jacket for cold weather.",
-                   style: "Casual",
-                   type: "Wool",
-                   imagePath: "black_jacket_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Green T-shirt",
-                   category: "Tops",
-                   colors: ["Green", "White"],
-                   describe: "A comfortable green t-shirt for everyday wear.",
-                   style: "Casual",
-                   type: "Cotton",
-                   imagePath: "green_tshirt_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Grey Sweatpants",
-                   category: "Bottoms",
-                   colors: ["Gray", "Black"],
-                   describe: "Soft and cozy grey sweatpants, perfect for lounging.",
-                   style: "Casual",
-                   type: "Polyester",
-                   imagePath: "grey_sweatpants_image"
-               ),
-               
-               WardrobeItem(
-                   name: "Brown Boots",
-                   category: "Shoes",
-                   colors: ["Brown", "Black"],
-                   describe: "Sturdy brown boots for outdoor activities.",
-                   style: "Outdoor",
-                   type: "Leather",
-                   imagePath: "brown_boots_image"
-               )
-           ]
-       }
+        let descriptor = FetchDescriptor<WardrobeItem>()
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch items: \(error)")
+            return []
+        }
+    }
+    
+    // Get filtered items based on search text and filter
+    func getFilteredItems(items: [WardrobeItem]) -> [WardrobeItem] {
+        let filtered = items.filter { item in
+            if searchText.isEmpty {
+                return true
+            } else {
+                return item.name.lowercased().contains(searchText.lowercased()) ||
+                       item.category.lowercased().contains(searchText.lowercased())
+            }
+        }
+        
+        switch selectedFilter {
+        case 1: // Available
+            return filtered.filter { $0.status == ItemStatus.available.rawValue }
+        case 2: // Unavailable
+            return filtered.filter { $0.status == ItemStatus.unavailable.rawValue }
+        case 3: // Rarely Used
+            return filtered.filter { $0.status == ItemStatus.rarelyUsed.rawValue }
+        default: // All
+            return filtered
+        }
+    }
+    
+    // Helper function to get color from name
+    func getColor(for name: String) -> Color {
+        switch name.lowercased() {
+        case "black": return .black
+        case "white": return .white
+        case "red": return .red
+        case "blue": return .blue
+        case "green": return .green
+        case "yellow": return .yellow
+        case "purple": return .purple
+        case "gray": return .gray
+        case "brown": return Color(red: 0.6, green: 0.4, blue: 0.2)
+        default: return .gray
+        }
+    }
+    
+    // Delete item
+    func deleteItem(_ item: WardrobeItem) {
+        modelContext.delete(item)
+        do {
+            try modelContext.save()
+            objectWillChange.send()
+        } catch {
+            print("Failed to delete item: \(error)")
+        }
+    }
+    
+    // Update item status
+    func updateItemStatus(_ item: WardrobeItem, status: ItemStatus) {
+        item.status = status.rawValue
+        do {
+            try modelContext.save()
+            objectWillChange.send()
+        } catch {
+            print("Failed to update item status: \(error)")
+        }
+    }
 }
