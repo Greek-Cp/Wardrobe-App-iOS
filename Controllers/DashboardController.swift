@@ -19,7 +19,7 @@ class DashboardController {
                    name: "Black Jeans",
                    category: "Bottoms",
                    colors: ["Black", "Gray"],
-                   describe: "Slim fit black jeans that go well with almost any top.",
+                    describe: "Slim fit black jeans that go well with almost any top.",
                    style: "Casual",
                    type: "Denim",
                    imagePath: "black_jeans_image"
