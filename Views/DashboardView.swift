@@ -25,6 +25,8 @@ struct ItemCardView: View {
     let item: WardrobeItem
     @Environment(\.modelContext) private var modelContext
     private let controller = ItemController()
+    @State private var showingDeleteAlert = false
+    @State private var isEditViewPresented = false
     
     var body: some View {
         NavigationLink(destination: DetailItemView(item: item)) {
@@ -120,10 +122,10 @@ struct ItemCardView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .contextMenu {
-            Button(role: .destructive) {
-                deleteItem()
+            Button {
+                isEditViewPresented = true
             } label: {
-                Label("Delete", systemImage: "trash")
+                Label("Edit", systemImage: "pencil")
             }
             
             Button {
@@ -136,6 +138,27 @@ struct ItemCardView: View {
                 updateItemStatus(.unavailable)
             } label: {
                 Label("Mark Unavailable", systemImage: "xmark.circle")
+            }
+            
+            Button(role: .destructive) {
+                showingDeleteAlert = true
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .alert("Delete Item", isPresented: $showingDeleteAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                withAnimation {
+                    deleteItem()
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete this item? This action cannot be undone.")
+        }
+        .sheet(isPresented: $isEditViewPresented) {
+            NavigationStack {
+                DetailItemView(item: item)
             }
         }
     }
