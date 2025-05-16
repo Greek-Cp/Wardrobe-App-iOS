@@ -128,18 +128,6 @@ struct ItemCardView: View {
                 Label("Edit", systemImage: "pencil")
             }
             
-            Button {
-                updateItemStatus(.available)
-            } label: {
-                Label("Mark Available", systemImage: "checkmark.circle")
-            }
-            
-            Button {
-                updateItemStatus(.unavailable)
-            } label: {
-                Label("Mark Unavailable", systemImage: "xmark.circle")
-            }
-            
             Button(role: .destructive) {
                 showingDeleteAlert = true
             } label: {
