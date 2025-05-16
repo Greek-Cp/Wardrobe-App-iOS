@@ -27,6 +27,24 @@ struct DetailItemView: View {
     private let controller = ItemController()
     private let styles = ["Casual", "Formal", "Sport", "Homewear", "Party", "Work"]
     
+    // Helper function to convert status to action
+    private func getActionFromStatus(_ status: String) -> String {
+        switch status {
+        case ItemStatus.available.rawValue:
+            return "Available"
+        case ItemStatus.unavailable.rawValue:
+            // Check if item is in use, laundry, or repair based on history or last action
+            if let lastAction = controller.getLastAction(for: item) {
+                return lastAction
+            }
+            return "Use" // Default to "Use" if no history
+        case ItemStatus.rarelyUsed.rawValue:
+            return "Rarely Used"
+        default:
+            return "Available"
+        }
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
@@ -219,9 +237,26 @@ struct DetailItemView: View {
                         HStack {
                             Text("Status: ")
                                 .foregroundColor(.gray)
-                            Text(item.status)
-                                .foregroundColor(item.status == ItemStatus.available.rawValue ? .green : .red)
-                                .fontWeight(.medium)
+                            if let lastAction = controller.getLastAction(for: item) {
+                                if lastAction == ItemAction.available.rawValue {
+                                    Text(lastAction)
+                                        .foregroundColor(.green)
+                                        .fontWeight(.medium)
+                                } else {
+                                    VStack(alignment: .leading) {
+                                        Text(lastAction)
+                                            .foregroundColor(.red)
+                                            .fontWeight(.medium)
+                                        Text(controller.getFormattedLastActionDate(for: item))
+                                            .font(.caption)
+                                            .foregroundColor(.gray)
+                                    }
+                                }
+                            } else {
+                                Text(item.status)
+                                    .foregroundColor(item.status == ItemStatus.available.rawValue ? .green : .red)
+                                    .fontWeight(.medium)
+                            }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
@@ -304,7 +339,7 @@ struct DetailItemView: View {
         }
         .onAppear {
             // Set initial selected action based on current status
-            selectedAction = item.status == ItemStatus.available.rawValue ? "Available" : ""
+            selectedAction = getActionFromStatus(item.status)
         }
     }
     
@@ -375,8 +410,10 @@ struct DetailItemView: View {
         let buttonColor = isSelected ? Color.blue : Color.gray.opacity(0.3)
         
         return Button(action: {
-            selectedAction = label
-            updateStatus(to: label)
+            withAnimation(.spring(response: 0.3)) {
+                selectedAction = label
+                updateStatus(to: label)
+            }
         }) {
             HStack {
                 Image(systemName: icon)
@@ -394,7 +431,6 @@ struct DetailItemView: View {
             .background(buttonColor)
             .clipShape(RoundedRectangle(cornerRadius: 16))
         }
-        .animation(.spring(response: 0.3), value: isSelected)
     }
     
     private func updateStatus(to action: String) {

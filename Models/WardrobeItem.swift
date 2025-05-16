@@ -7,6 +7,13 @@ enum ItemStatus: String, Codable {
     case rarelyUsed = "Rarely Used"
 }
 
+enum ItemAction: String, Codable {
+    case use = "Use"
+    case laundry = "Laundry"
+    case repair = "Repair"
+    case available = "Available"
+}
+
 @Model
 class WardrobeItem {
     var id: UUID
@@ -19,6 +26,9 @@ class WardrobeItem {
     var type: String
     var imagePath: String
     var status: String = ItemStatus.available.rawValue
+    var lastUsed: Date?
+    var lastAction: String?
+    var lastActionDate: Date?
     
     var imagePaths: [String] {
         imagePath.split(separator: ",").map(String.init)
@@ -35,5 +45,8 @@ class WardrobeItem {
         self.style = style
         self.imagePath = imagePath
         self.status = status
+        self.lastUsed = nil
+        self.lastAction = nil
+        self.lastActionDate = nil
     }
 }

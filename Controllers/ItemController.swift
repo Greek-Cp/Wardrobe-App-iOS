@@ -11,6 +11,9 @@ import SwiftUI
 import SwiftData
 
 class ItemController {
+    // Add status history tracking using UUID string as key
+    private var itemStatusHistory: [String: String] = [:]
+    
     func saveItem(context: ModelContext, name: String, category: String, colors: [String],
                  describe: String, style: String, imagePath: String, status: String = ItemStatus.available.rawValue) {
         
@@ -34,21 +37,46 @@ class ItemController {
         }
     }
     
-    func updateItem(item: WardrobeItem, name: String, category: String, colors: [String],
-                   describe: String, style: String, imagePath: String?, status: String) {
-        
-        item.name = name
-        item.category = category
-        item.colors = colors
-        item.describe = describe
-        item.style = style
-        item.type = category
-        
+    func updateItem(item: WardrobeItem, name: String? = nil, category: String? = nil, colors: [String]? = nil, describe: String? = nil, style: String? = nil, imagePath: String? = nil, status: String? = nil) {
+        if let name = name {
+            item.name = name
+        }
+        if let category = category {
+            item.category = category
+        }
+        if let colors = colors {
+            item.colors = colors
+        }
+        if let describe = describe {
+            item.describe = describe
+        }
+        if let style = style {
+            item.style = style
+        }
         if let imagePath = imagePath {
             item.imagePath = imagePath
         }
+        if let status = status {
+            item.status = status
+            updateItemStatus(item: item, action: status)
+        }
+    }
+    
+    func updateItemStatus(item: WardrobeItem, action: String) {
+        let now = Date()
+        item.lastActionDate = now
+        item.lastAction = action
         
-        item.status = status
+        if action == ItemAction.use.rawValue {
+            item.lastUsed = now
+        }
+        
+        // Update status based on action
+        if action == ItemAction.available.rawValue {
+            item.status = ItemStatus.available.rawValue
+        } else {
+            item.status = ItemStatus.unavailable.rawValue
+        }
     }
     
     func markItemAsUnavailable(item: WardrobeItem) {
@@ -56,7 +84,7 @@ class ItemController {
     }
     
     func markItemAsAvailable(item: WardrobeItem) {
-        item.status = ItemStatus.available.rawValue
+        updateItemStatus(item: item, action: ItemAction.available.rawValue)
     }
     
     func markItemAsRarelyUsed(item: WardrobeItem) {
@@ -64,20 +92,26 @@ class ItemController {
     }
     
     func handleWear(item: WardrobeItem) {
-        // Logic for when an item is worn
-        // Could track usage, update last worn date, etc.
-        print("Item worn: \(item.name)")
+        updateItemStatus(item: item, action: ItemAction.use.rawValue)
     }
     
     func handleLaundry(item: WardrobeItem) {
-        // Logic for when an item is sent to laundry
-        markItemAsUnavailable(item: item)
-        print("Item sent to laundry: \(item.name)")
+        updateItemStatus(item: item, action: ItemAction.laundry.rawValue)
     }
     
     func handleRepair(item: WardrobeItem) {
-        // Logic for when an item is sent for repair
-        markItemAsUnavailable(item: item)
-        print("Item sent for repair: \(item.name)")
+        updateItemStatus(item: item, action: ItemAction.repair.rawValue)
+    }
+    
+    func getLastAction(for item: WardrobeItem) -> String? {
+        return item.lastAction
+    }
+    
+    func getFormattedLastActionDate(for item: WardrobeItem) -> String {
+        guard let date = item.lastActionDate else { return "" }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: date)
     }
 }

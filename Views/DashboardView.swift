@@ -1,8 +1,5 @@
 import SwiftUI
-
-import Foundation
 import SwiftData
-import SwiftUI
 
 struct SearchBarViewApp: View {
     @Binding var text: String
@@ -24,9 +21,12 @@ struct SearchBarViewApp: View {
     }
 }
 
-
 struct ItemCardView: View {
     let item: WardrobeItem
+    @Environment(\.modelContext) private var modelContext
+    private let controller = ItemController()
+    @State private var showingDeleteAlert = false
+    @State private var isEditViewPresented = false
     
     var body: some View {
         NavigationLink(destination: DetailItemView(item: item)) {
@@ -118,12 +118,70 @@ struct ItemCardView: View {
             .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .frame(height: 200) // Fixed total height for consistency
+            .frame(height: 200)
         }
         .buttonStyle(PlainButtonStyle())
+        .contextMenu {
+            Button {
+                isEditViewPresented = true
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+            
+            Button {
+                updateItemStatus(.available)
+            } label: {
+                Label("Mark Available", systemImage: "checkmark.circle")
+            }
+            
+            Button {
+                updateItemStatus(.unavailable)
+            } label: {
+                Label("Mark Unavailable", systemImage: "xmark.circle")
+            }
+            
+            Button(role: .destructive) {
+                showingDeleteAlert = true
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+        .alert("Delete Item", isPresented: $showingDeleteAlert) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                withAnimation {
+                    deleteItem()
+                }
+            }
+        } message: {
+            Text("Are you sure you want to delete this item? This action cannot be undone.")
+        }
+        .sheet(isPresented: $isEditViewPresented) {
+            NavigationStack {
+                DetailItemView(item: item)
+            }
+        }
     }
     
-    func getColor(for name: String) -> Color {
+    private func deleteItem() {
+        modelContext.delete(item)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to delete item: \(error)")
+        }
+    }
+    
+    private func updateItemStatus(_ status: ItemStatus) {
+        controller.updateItemStatus(item: item, action: status.rawValue)
+        do {
+            try modelContext.save()
+        } catch {
+            print("Failed to update item status: \(error)")
+        }
+    }
+    
+    private func getColor(for name: String) -> Color {
         switch name.lowercased() {
         case "black": return .black
         case "white": return .white
@@ -140,9 +198,8 @@ struct ItemCardView: View {
 }
 
 struct DashboardView: View {
-    @State private var searchText = ""
-    @State private var selectedFilter = 0
-    
+    @Environment(\.modelContext) private var modelContext
+    @StateObject private var dashboardController: DashboardController
     @Query private var items: [WardrobeItem]
     
     private let gridColumns = [
@@ -150,27 +207,12 @@ struct DashboardView: View {
         GridItem(.flexible(), spacing: 16)
     ]
     
-    // Filtered items based on search text and selected filter
-    var filteredItems: [WardrobeItem] {
-        let filtered = items.filter { item in
-            if searchText.isEmpty {
-                return true
-            } else {
-                return item.name.lowercased().contains(searchText.lowercased()) ||
-                       item.category.lowercased().contains(searchText.lowercased())
-            }
-        }
-        
-        switch selectedFilter {
-        case 1: // Available
-            return filtered.filter { $0.status == ItemStatus.available.rawValue }
-        case 2: // Unavailable
-            return filtered.filter { $0.status == ItemStatus.unavailable.rawValue }
-        case 3: // Rarely Used
-            return filtered.filter { $0.status == ItemStatus.rarelyUsed.rawValue }
-        default: // All
-            return filtered
-        }
+    init(modelContext: ModelContext) {
+        _dashboardController = StateObject(wrappedValue: DashboardController(modelContext: modelContext))
+    }
+    
+    private var filteredItems: [WardrobeItem] {
+        dashboardController.getFilteredItems(items: items)
     }
     
     var body: some View {
@@ -194,11 +236,11 @@ struct DashboardView: View {
                 .padding(.top)
                 
                 // Search bar
-                SearchBarViewApp(text: $searchText)
+                SearchBarViewApp(text: $dashboardController.searchText)
                     .padding(.vertical, 8)
                 
                 // Filter tabs
-                Picker("Filter", selection: $selectedFilter) {
+                Picker("Filter", selection: $dashboardController.selectedFilter) {
                     Text("All").tag(0)
                     Text("Available").tag(1)
                     Text("Unavailable").tag(2)
@@ -225,7 +267,6 @@ struct DashboardView: View {
                         LazyVGrid(columns: gridColumns, spacing: 16) {
                             ForEach(filteredItems) { item in
                                 ItemCardView(item: item)
-                                    // Remove frame constraint here to use the one in ItemCardView
                             }
                         }
                         .padding(16)
@@ -233,9 +274,13 @@ struct DashboardView: View {
                 }
             }
             .background(Color.gray.opacity(0.05))
+            .onAppear {
+                dashboardController.items = items
+            }
         }
     }
 }
+
 // Add Item View
 
 // Sample data provider for preview
@@ -261,6 +306,6 @@ class PreviewSampleData {
         container.mainContext.insert(item)
     }
     
-    return DashboardView()
+    return DashboardView(modelContext: container.mainContext)
         .modelContainer(container)
 }
