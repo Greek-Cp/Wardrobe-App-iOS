@@ -33,6 +33,32 @@ struct BackButton: View {
     }
 }
 
+struct AddPhotoView: View {
+    @State private var showingImageOptions = false
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12)
+            .fill(Color.gray.opacity(0.2))
+            .frame(height: 250)
+            .overlay {
+                VStack {
+                    ZStack {
+                        Circle()
+                            .fill(Color.blue.opacity(0.15))
+                            .frame(width: 60, height: 60)
+                        
+                        Image(systemName: "plus")
+                            .font(.system(size: 30))
+                            .foregroundColor(.blue)
+                    }
+                    Text("Add Media")
+                        .foregroundColor(.blue)
+                        .font(.subheadline)
+                        .padding(.top, 4)
+                }
+            }
+    }
+}
+
 // Custom Radio Button Style
 struct RadioButtonStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -188,26 +214,7 @@ struct AddItemView: View {
                     ZStack {
                         TabView(selection: $currentImageIndex) {
                             if images.isEmpty {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.gray.opacity(0.2))
-                                    .frame(height: 250)
-                                    .overlay {
-                                        VStack {
-                                            ZStack {
-                                                Circle()
-                                                    .fill(Color.blue.opacity(0.15))
-                                                    .frame(width: 60, height: 60)
-                                                
-                                                Image(systemName: "plus")
-                                                    .font(.system(size: 30))
-                                                    .foregroundColor(.blue)
-                                            }
-                                            Text("Add Media")
-                                                .foregroundColor(.blue)
-                                                .font(.subheadline)
-                                                .padding(.top, 4)
-                                        }
-                                    }
+                                AddPhotoView()
                                     .tag(0)
                                     .onTapGesture {
                                         showingImageOptions = true
@@ -248,6 +255,11 @@ struct AddItemView: View {
                                     }
                                     .tag(index)
                                 }
+                                AddPhotoView()
+                                    .tag(images.count)
+                                    .onTapGesture {
+                                        showingImageOptions = true
+                                    }
                             }
                         }
                         .frame(height: 250)
