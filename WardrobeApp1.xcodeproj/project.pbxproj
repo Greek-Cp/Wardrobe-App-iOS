@@ -56,6 +56,7 @@
 		0400D4012DCC7A99006E752C /* DashboardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		0400D4022DCC7A99006E752C /* DetailItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailItemView.swift; sourceTree = "<group>"; };
 		0400D4032DCC7A99006E752C /* EditItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditItemView.swift; sourceTree = "<group>"; };
+		047A35482DD5A78800E8D104 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		04A774FF2DD2D628000CD1B4 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		04A775012DD2D69D000CD1B4 /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
 		04A775232DD584EB000CD1B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -100,6 +101,7 @@
 		0400D3DE2DCC7A2F006E752C /* WardrobeApp1 */ = {
 			isa = PBXGroup;
 			children = (
+				047A35482DD5A78800E8D104 /* Info.plist */,
 				0400D3DF2DCC7A2F006E752C /* WardrobeApp1App.swift */,
 				0400D3E12DCC7A2F006E752C /* ContentView.swift */,
 				0400D3E32DCC7A2F006E752C /* Item.swift */,
@@ -420,8 +422,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WardrobeApp1/Preview Content\"";
+				DEVELOPMENT_TEAM = N5BWL578F9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WardrobeApp1/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Minta foto coy";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = mic;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nambah foto ya";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "cari foto ya";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -448,8 +456,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WardrobeApp1/Preview Content\"";
+				DEVELOPMENT_TEAM = N5BWL578F9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = WardrobeApp1/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Minta foto coy";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = mic;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nambah foto ya";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "cari foto ya";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
