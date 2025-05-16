@@ -65,6 +65,7 @@ struct DetailItemView: View {
                                             .aspectRatio(contentMode: .fill)
                                             .frame(height: 320)
                                             .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            .frame(maxWidth: .greatestFiniteMagnitude)
                                             .tag(index)
                                     }
                                 }
@@ -110,7 +111,6 @@ struct DetailItemView: View {
                     .padding(12)
                     .foregroundColor(.primary)
                 }
-                
                 if isEditing {
                     // Editing mode content
                     VStack(spacing: 16) {
