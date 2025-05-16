@@ -264,12 +264,13 @@ struct DashboardView: View {
                     VStack(spacing: 16) {
                         Image(systemName: "tshirt.fill")
                             .font(.system(size: 64))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
                         Text("No items found")
                             .font(.headline)
+                            .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
                         Text("Add some clothes to your wardrobe")
                             .font(.subheadline)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.gray.opacity(0.05))
