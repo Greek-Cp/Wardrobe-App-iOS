@@ -209,39 +209,53 @@ struct AddItemView: View {
                                         }
                                     }
                                     .tag(0)
+                                    .onTapGesture {
+                                        showingImageOptions = true
+                                    }
                             } else {
                                 ForEach(Array(images.enumerated()), id: \.offset) { index, image in
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fill)
-                                        .frame(height: 250)
-                                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                                        .tag(index)
+                                    ZStack(alignment: .topTrailing) {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fill)
+                                            .frame(height: 250)
+                                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                                            .tag(index)
+                                            .onTapGesture {
+                                                showingImageOptions = true
+                                            }
+                                        
+                                        Button(action: {
+                                            images.remove(at: index)
+                                            
+                                            if images.isEmpty {
+                                                currentImageIndex = 0
+                                            } else if index <= currentImageIndex && currentImageIndex > 0 {
+                                                currentImageIndex -= 1
+                                            }
+                                        }) {
+                                            ZStack {
+                                                Circle()
+                                                    .fill(Color.black.opacity(0.6))
+                                                    .frame(width: 28, height: 28)
+                                                
+                                                Image(systemName: "xmark")
+                                                    .font(.system(size: 20, weight: .bold))
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
+                                        .padding(8)
+                                    }
+                                    .tag(index)
                                 }
                             }
                         }
                         .frame(height: 250)
                         .tabViewStyle(PageTabViewStyle())
-                        
-                        if !images.isEmpty {
-                            VStack {
-                                Spacer()
-                                HStack {
-                                    ForEach(0..<images.count, id: \.self) { index in
-                                        Circle()
-                                            .fill(currentImageIndex == index ? Color.blue : Color.gray)
-                                            .frame(width: 8, height: 8)
-                                    }
-                                }
-                                .padding(.bottom, 8)
-                            }
-                        }
+                        .indexViewStyle(.page(backgroundDisplayMode: .always))
                     }
                     .padding(.horizontal)
                     .padding(.top)
-                    .onTapGesture {
-                        showingImageOptions = true
-                    }
                     
                     VStack(spacing: 0) {
                         // Name Field
