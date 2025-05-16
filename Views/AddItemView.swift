@@ -1,5 +1,38 @@
 import SwiftUI
 
+struct BackButton: View {
+    @State private var showAlert = false
+    let alertTitle: String = "Return to Dashboard?"
+    let alertMsg: String = "All cloth information filled here won't be saved."
+    
+    let unsavedData: Bool
+    let onReturn: () -> Void
+    
+    var body: some View {
+        Button(action: {
+            unsavedData ? showAlert = true : onReturn()
+        }) {
+            Image(systemName: "chevron.left")
+            Text("Dashboard")
+        }
+        .alert(
+            alertTitle,
+            isPresented: $showAlert,
+            actions: {
+                Button("Cancel", role: .cancel) {
+                }
+                Button("Return", role: .destructive){
+                    onReturn()
+                }
+                
+            },
+            message: {
+                Text(alertMsg)
+            }
+        )
+    }
+}
+
 // Custom Radio Button Style
 struct RadioButtonStyle: ToggleStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -325,17 +358,9 @@ struct AddItemView: View {
             .navigationBarBackButtonHidden(true)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        if !name.isEmpty || !type.isEmpty || !selectedColors.isEmpty || !images.isEmpty {
-                            showingAlert = true
-                            alertMessage = "Are you sure you want to discard this item? Any changes will be lost."
-                        } else {
-                            dismiss()
-                        }
-                    }) {
-                        Image(systemName: "chevron.left")
-                        Text("Dashboard")
-                    }
+                    BackButton(unsavedData: !images.isEmpty || !name.isEmpty || !type.isEmpty || !selectedColors.isEmpty || !description.isEmpty, onReturn: {
+                        dismiss()
+                    })
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
