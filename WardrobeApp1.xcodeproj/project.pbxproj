@@ -28,6 +28,7 @@
 		0400D4122DCC7A99006E752C /* DetailItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0400D4022DCC7A99006E752C /* DetailItemView.swift */; };
 		0400D4132DCC7A99006E752C /* EditItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0400D4032DCC7A99006E752C /* EditItemView.swift */; };
 		040242F52DDAD63B003D074E /* CustomNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040242F42DDAD63B003D074E /* CustomNavigationBar.swift */; };
+		049CB0DE2DDB03CE00E218C6 /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 049CB0DD2DDB03CE00E218C6 /* NotificationHelper.swift */; };
 		04A775002DD2D628000CD1B4 /* AddItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A774FF2DD2D628000CD1B4 /* AddItemView.swift */; };
 		04A775022DD2D69D000CD1B4 /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775012DD2D69D000CD1B4 /* ItemController.swift */; };
 		04A775242DD584EB000CD1B4 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04A775232DD584EB000CD1B4 /* ImagePicker.swift */; };
@@ -60,6 +61,7 @@
 		0400D4032DCC7A99006E752C /* EditItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditItemView.swift; sourceTree = "<group>"; };
 		040242F42DDAD63B003D074E /* CustomNavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationBar.swift; sourceTree = "<group>"; };
 		047A35482DD5A78800E8D104 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		049CB0DD2DDB03CE00E218C6 /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		04A774FF2DD2D628000CD1B4 /* AddItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddItemView.swift; sourceTree = "<group>"; };
 		04A775012DD2D69D000CD1B4 /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
 		04A775232DD584EB000CD1B4 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				04A775272DD58538000CD1B4 /* ImageManager.swift */,
+				049CB0DD2DDB03CE00E218C6 /* NotificationHelper.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -289,6 +292,7 @@
 				0400D4112DCC7A99006E752C /* DashboardView.swift in Sources */,
 				0400D4062DCC7A99006E752C /* SceneDelegate.swift in Sources */,
 				0400D4072DCC7A99006E752C /* ModelContainer.swift in Sources */,
+				049CB0DE2DDB03CE00E218C6 /* NotificationHelper.swift in Sources */,
 				04A775022DD2D69D000CD1B4 /* ItemController.swift in Sources */,
 				0400D4052DCC7A99006E752C /* AppDelegate.swift in Sources */,
 				0400D3E22DCC7A2F006E752C /* ContentView.swift in Sources */,
@@ -430,10 +434,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WardrobeApp1/Preview Content\"";
-				DEVELOPMENT_TEAM = N5BWL578F9;
+				DEVELOPMENT_TEAM = 5QGHM9F69G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WardrobeApp1/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Minta foto coy";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = mic;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nambah foto ya";
@@ -448,7 +453,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = tim3.WardrobeApp1;
+				PRODUCT_BUNDLE_IDENTIFIER = tim3.WardrobeAppIOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -468,6 +473,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WardrobeApp1/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Minta foto coy";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = mic;
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "nambah foto ya";

@@ -104,28 +104,6 @@ struct ItemCardView: View {
                                 .clipShape(Capsule())
                         }
                     }
-                    
-                    // Colors
-//                    if !item.colors.isEmpty {
-//                        HStack(spacing: 4) {
-//                            ForEach(item.colors.prefix(3), id: \.self) { colorName in
-//                                Circle()
-//                                    .fill(getColor(for: colorName))
-//                                    .frame(width: 10, height: 10)
-//                                    .overlay(
-//                                        Circle()
-//                                            .stroke(Color.white, lineWidth: 1)
-//                                    )
-//                            }
-//                            if item.colors.count > 3 {
-//                                Text("+\(item.colors.count - 3)")
-//                                    .foregroundColor(.gray)
-//                                    .font(.caption2)
-//                                    .padding(.leading, 2)
-//                            }
-//                        }
-//                    }
-                    
                     // Category and style
                     HStack {
                         Text(item.category)
@@ -258,10 +236,10 @@ struct DashboardView: View {
                 
                 // Filter tabs
                 CustomSegmentedControl(
-                                    segments: ["All", "Available", "Unavailable", "Rarely"],
-                                    selectedIndex: $dashboardController.selectedFilter
-                                )
-                                .padding(.vertical, 8)
+                    segments: ["All", "Available", "Unavailable", "Rarely"],
+                    selectedIndex: $dashboardController.selectedFilter
+                )
+                .padding(.vertical, 8)
                 
                 if filteredItems.isEmpty {
                     VStack(spacing: 16) {
@@ -289,9 +267,9 @@ struct DashboardView: View {
                         }
                         
                         
-                            
-                       
-                            
+                        
+                        
+                        
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.gray.opacity(0.05))
@@ -309,6 +287,8 @@ struct DashboardView: View {
             .background(Color.gray.opacity(0.05))
             .onAppear {
                 dashboardController.items = items
+                NotificationHelper.checkItemsAndNotify(items)
+                NotificationHelper.rareUsedNotify(items)
             }
         }
     }

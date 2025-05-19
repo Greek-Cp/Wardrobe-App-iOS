@@ -10,11 +10,12 @@ import SwiftData
 
 @main
 struct WardrobeApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     let container: ModelContainer
     
     init() {
         let customColor = UIColor(red: 146/255, green: 198/255, blue: 164/255, alpha: 1.0)
-            UINavigationBar.appearance().tintColor = customColor
+        UINavigationBar.appearance().tintColor = customColor
         do {
             let schema = Schema([
                 WardrobeItem.self
@@ -42,3 +43,4 @@ struct WardrobeApp: App {
         }
     }
 }
+
