@@ -5,6 +5,8 @@ import PhotosUI
 struct DetailItemView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
     @State var item: WardrobeItem
     @State private var selectedAction: String = ""
@@ -47,6 +49,9 @@ struct DetailItemView: View {
     }
     
     var body: some View {
+        CustomNavigationBar(title: "Detail Item") {
+            presentationMode.wrappedValue.dismiss()
+        }
         ScrollView {
             VStack(spacing: 16) {
                 // Image Carousel
@@ -273,15 +278,14 @@ struct DetailItemView: View {
                         }
                         .padding(.horizontal)
                     }
-                    
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Description")
                             .font(.headline)
                         ZStack(alignment: Alignment(horizontal: .leading, vertical: .top)) {
                             RoundedRectangle(cornerRadius: 25.0)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(Color.gray.opacity(0.1))
                             Text(item.describe)
-                                .foregroundStyle(Color.white)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
                                 .padding(.top)
                                 .padding(.leading)
                         }
@@ -304,6 +308,9 @@ struct DetailItemView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbarBackground(Color.white, for: .navigationBar)
+        .tint(Color(red: 146/255, green: 198/255, blue: 164/255))
         .sheet(isPresented: $showingImagePicker) {
             let _ = print("jumlah gambar :\(editedImages.count)")
             var countEditedImages = editedImages.count
@@ -492,13 +499,13 @@ struct DetailItemView: View {
         Text(text)
             .padding(.vertical, 6)
             .padding(.horizontal, 12)
-            .background(Color.blue.opacity(0.1))
-            .foregroundColor(.blue)
+            .background(Color(red: 146/255, green: 198/255, blue: 164/255))
+            .foregroundColor(.white)
             .cornerRadius(12)
     }
 }
 
 
-//#Preview {
-//    DetailItemView(item: WardrobeItem.preview)
-//}
+
+
+
