@@ -136,4 +136,15 @@ class DashboardController: ObservableObject {
                }
            }
        }
+    
+    func countItems() -> Int {
+        let descriptor = FetchDescriptor<WardrobeItem>()
+        do {
+            let items = try modelContext.fetch(descriptor)
+            return items.count
+        } catch {
+            print("Failed to fetch items count: \(error)")
+            return 0
+        }
+    }
 }

@@ -269,9 +269,27 @@ struct DashboardView: View {
                         Text("No items found")
                             .font(.headline)
                             .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
-                        Text("Add some clothes to your wardrobe")
-                            .font(.subheadline)
-                            .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
+                        
+                        if(dashboardController.countItems() == 0){
+                            Text("Add some clothes to your wardrobe")
+                                .font(.subheadline)
+                                .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
+                        }else{
+                            if(dashboardController.selectedFilter == 3){
+                                Text("Good Job!! All clothes have been worn rencently")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
+                            }else if(dashboardController.selectedFilter == 2){
+                                Text("All clothes is available!")
+                                    .font(.subheadline)
+                                    .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
+                            }
+                        }
+                        
+                        
+                            
+                       
+                            
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.gray.opacity(0.05))
