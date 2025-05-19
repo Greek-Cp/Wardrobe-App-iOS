@@ -23,6 +23,7 @@ struct DetailItemView: View {
     @State private var showingColorSelection = false
     @State private var showingAlert = false
     @State private var alertMessage = ""
+    @State private var status = "edit"
     
     private let controller = ItemController()
     private let styles = ["Casual", "Formal", "Sport", "Homewear", "Party", "Work"]
@@ -306,7 +307,11 @@ struct DetailItemView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingImagePicker) {
-            ImagePicker(selectedImages: $editedImages)
+            let _ = print("jumlah gambar :\(editedImages.count)")
+            var countEditedImages = editedImages.count
+            
+            ImagePicker(selectedImages: $editedImages, status: $status)
+            
         }
         .sheet(isPresented: $showingCamera) {
             CameraView(image: $editedImages) { result in

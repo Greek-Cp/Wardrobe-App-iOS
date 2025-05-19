@@ -211,6 +211,7 @@ struct AddItemView: View {
     @State private var showingAlert = false
     @State private var alertMessage = ""
     @State private var currentImageIndex = 0
+    @State private var status_coba = "add"
     
     let styles = ["Casual", "Formal", "Sport", "Homewear", "Party", "Work"]
     
@@ -412,7 +413,7 @@ struct AddItemView: View {
                 ColorSelectionView(selectedColors: $selectedColors)
             }
             .sheet(isPresented: $showingImagePicker) {
-                ImagePicker(selectedImages: $images)
+                ImagePicker(selectedImages: $images, status: $status_coba)
             }
             .sheet(isPresented: $showingCamera) {
                 CameraView(image: $images) { result in
