@@ -2,6 +2,8 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 
+//var colorTheme = Color(red: 146/255, green: 198/255, blue: 164/255)
+
 struct DetailItemView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var context
@@ -68,15 +70,15 @@ struct DetailItemView: View {
                                             VStack {
                                                 ZStack {
                                                     Circle()
-                                                        .fill(Color.blue.opacity(0.15))
+                                                        .fill(colorTheme.opacity(0.15))
                                                         .frame(width: 60, height: 60)
                                                     
                                                     Image(systemName: "plus")
                                                         .font(.system(size: 30))
-                                                        .foregroundColor(.blue)
+                                                        .foregroundColor(colorTheme)
                                                 }
                                                 Text("Add Media")
-                                                    .foregroundColor(.blue)
+                                                    .foregroundColor(colorTheme)
                                                     .font(.subheadline)
                                                     .padding(.top, 4)
                                             }
@@ -215,7 +217,7 @@ struct DetailItemView: View {
                                             .padding(.vertical, 8)
                                             .padding(.horizontal, 12)
                                             .frame(maxWidth: .infinity)
-                                            .background(editedStyle == styleOption ? Color.blue : Color.gray.opacity(0.1))
+                                            .background(editedStyle == styleOption ? colorTheme : Color.gray.opacity(0.1))
                                             .foregroundColor(editedStyle == styleOption ? .white : .primary)
                                             .cornerRadius(8)
                                     }
