@@ -1,5 +1,8 @@
 import SwiftUI
 
+var colorTheme = Color(red: 146/255, green: 198/255, blue: 164/255)
+//var colorTheme = Color.blue
+
 struct BackButton: View {
     @State private var showAlert = false
     let alertTitle: String = "Return to Dashboard?"
@@ -13,7 +16,9 @@ struct BackButton: View {
             unsavedData ? showAlert = true : onReturn()
         }) {
             Image(systemName: "chevron.left")
+                .foregroundColor(colorTheme)
             Text("Dashboard")
+                .foregroundColor(colorTheme)
         }
         .alert(
             alertTitle,
@@ -43,15 +48,15 @@ struct AddPhotoView: View {
                 VStack {
                     ZStack {
                         Circle()
-                            .fill(Color.blue.opacity(0.15))
+                            .fill(colorTheme.opacity(0.15))
                             .frame(width: 60, height: 60)
                         
                         Image(systemName: "plus")
                             .font(.system(size: 30))
-                            .foregroundColor(.blue)
+                            .foregroundColor(colorTheme)
                     }
                     Text("Add Media")
-                        .foregroundColor(.blue)
+                        .foregroundColor(colorTheme)
                         .font(.subheadline)
                         .padding(.top, 4)
                 }
@@ -65,12 +70,12 @@ struct RadioButtonStyle: ToggleStyle {
         HStack {
             ZStack {
                 Circle()
-                    .stroke(Color.blue, lineWidth: 1)
+                    .stroke(colorTheme, lineWidth: 1)
                     .frame(width: 24, height: 24)
                 
                 if configuration.isOn {
                     Circle()
-                        .fill(Color.blue)
+                        .fill(colorTheme)
                         .frame(width: 16, height: 16)
                 }
             }
@@ -115,7 +120,7 @@ struct ColorSelectionView: View {
                             Spacer()
                             if selectedColors.contains(colorName) {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(colorTheme)
                             }
                         }
                     }
@@ -129,11 +134,13 @@ struct ColorSelectionView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(colorTheme)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
+                    .foregroundColor(colorTheme)
                 }
             }
         }
@@ -163,7 +170,7 @@ struct TypeSelectionView: View {
                             Spacer()
                             if selectedType == type {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(colorTheme)
                             }
                         }
                     }
@@ -177,6 +184,7 @@ struct TypeSelectionView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .foregroundColor(colorTheme)
                 }
             }
         }
@@ -353,7 +361,7 @@ struct AddItemView: View {
                                             .padding(.vertical, 8)
                                             .padding(.horizontal, 12)
                                             .frame(maxWidth: .infinity)
-                                            .background(style == styleOption ? Color.blue : Color.gray.opacity(0.1))
+                                            .background(style == styleOption ? colorTheme : Color.gray.opacity(0.1))
                                             .foregroundColor(style == styleOption ? .white : .primary)
                                             .cornerRadius(8)
                                     }
@@ -393,7 +401,7 @@ struct AddItemView: View {
                     Button("Save") {
                         saveItem()
                     }
-                    .foregroundColor(canSave ? .blue : .gray)
+                    .foregroundColor(canSave ? colorTheme : .gray)
                     .disabled(!canSave)
                 }
             }
