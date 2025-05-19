@@ -298,7 +298,7 @@ struct DetailItemView: View {
                         HStack(spacing: 12) {
                             statusButton(icon: "checkmark", label: "Available")
                             statusButton(icon: "tshirt.fill", label: "Use")
-                            statusButton(icon: "hanger", label: "Laundry")
+                            statusButton(icon: "washer", label: "Laundry")
                             statusButton(icon: "scissors", label: "Repair")
                         }
                     }
