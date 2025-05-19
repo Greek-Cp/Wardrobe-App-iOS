@@ -67,17 +67,19 @@ struct ItemCardView: View {
                             .clipped()
                     } else {
                         Rectangle()
-                            .fill(Color.gray.opacity(0.1))
-                            .overlay(
-                                VStack(spacing: 8) {
-                                    Image(systemName: "photo")
-                                        .font(.system(size: 20))
-                                        .foregroundColor(.gray)
-                                    Text("No Image")
-                                        .font(.caption)
-                                        .foregroundColor(.gray)
-                                }
-                            )
+                            .fill(Color(UIColor.secondarySystemBackground))
+                                    .frame(height: 120)
+                                    .overlay(
+                                        VStack(spacing: 8) {
+                                            Image(systemName: "photo")
+                                                .font(.system(size: 24))
+                                                .foregroundColor(Color(UIColor.tertiaryLabel))
+                                            Text("No Image")
+                                                .font(.caption)
+                                                .foregroundColor(Color(UIColor.secondaryLabel))
+                                        }
+                                    )
+                                    .cornerRadius(12)
                     }
                 }
                 .frame(height: 130)
@@ -140,7 +142,7 @@ struct ItemCardView: View {
                 }
                 .padding(8)
             }
-            .background(Color.white)
+            .background(Color(UIColor.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
             .frame(height: 200)
