@@ -499,7 +499,7 @@ struct DetailItemView: View {
         Text(text)
             .padding(.vertical, 6)
             .padding(.horizontal, 12)
-            .background(.white)
+            .background(Color(UIColor.secondarySystemBackground))
             .foregroundColor(Color(red: 146/255, green: 198/255, blue: 164/255))
             .cornerRadius(12)
     }
