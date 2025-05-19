@@ -5,6 +5,7 @@ import PhotosUI
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImages: [UIImage]
     @Environment(\.dismiss) private var dismiss
+    @Binding var status:String
     
     func makeUIViewController(context: Context) -> PHPickerViewController {
         var config = PHPickerConfiguration()
@@ -55,6 +56,10 @@ struct ImagePicker: UIViewControllerRepresentable {
             parent.dismiss()
             
             guard !results.isEmpty else { return }
+            
+            if(self.parent.status == "edit"){
+                self.parent.selectedImages = []
+            }
             
             for result in results {
                 if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
