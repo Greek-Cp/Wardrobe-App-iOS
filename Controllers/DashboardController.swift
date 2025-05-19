@@ -49,8 +49,16 @@ class DashboardController: ObservableObject {
             if searchText.isEmpty {
                 return true
             } else {
-                return item.name.lowercased().contains(searchText.lowercased()) ||
-                       item.category.lowercased().contains(searchText.lowercased())
+                let keywords = searchText.lowercased().split(separator: " ").map { String($0) }
+                //might be laggy if too much filter here
+                return keywords.allSatisfy { keyword in
+                    item.name.lowercased().contains(keyword) ||
+                    item.category.lowercased().contains(keyword) ||
+                    item.style.lowercased().contains(keyword) ||
+                    item.type.lowercased().contains(keyword) ||
+                    item.describe.lowercased().contains(keyword) ||
+                    item.colors.contains(where: { $0.lowercased().contains(keyword) })
+                }
             }
         }
         
