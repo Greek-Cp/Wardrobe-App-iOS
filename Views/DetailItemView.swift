@@ -236,8 +236,6 @@ struct DetailItemView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                         
                         HStack {
-                            Text("Status: ")
-                                .foregroundColor(.gray)
                             if let lastAction = controller.getLastAction(for: item) {
                                 if lastAction == ItemAction.available.rawValue {
                                     Text(lastAction)
@@ -412,7 +410,7 @@ struct DetailItemView: View {
     
     private func statusButton(icon: String, label: String) -> some View {
         let isSelected = selectedAction == label
-        let buttonColor = isSelected ? Color.blue : Color.gray.opacity(0.3)
+        let buttonColor = isSelected ? Color(red: 146/255, green: 198/255, blue: 164/255) : Color.gray.opacity(0.3)
         
         return Button(action: {
             withAnimation(.spring(response: 0.3)) {
