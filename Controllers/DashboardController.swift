@@ -28,6 +28,8 @@ class DashboardController: ObservableObject {
                 self?.objectWillChange.send()
             }
             .store(in: &cancellables)
+        
+        self.updateStatusBasedOnLastUsed()
     }
     
     // Get all items
@@ -101,4 +103,37 @@ class DashboardController: ObservableObject {
             print("Failed to update item status: \(error)")
         }
     }
+    
+    // Fungsi baru untuk memeriksa dan mengubah status berdasarkan lastUsed
+       func updateStatusBasedOnLastUsed() {
+           let today = Date()
+           let calendar = Calendar.current
+           
+           // Ambil semua item
+           let allItems = fetchItems()
+           
+           let format = DateFormatter()
+           format.dateFormat = "yyyy-MM-dd HH:mm:ss"
+           
+           // Iterasi untuk memeriksa setiap item
+           for item in allItems {
+               // Pastikan lastUsed tidak nil
+               if let lastUsed = item.lastUsed {
+                   // Hitung selisih bulan antara lastUsed dan hari ini
+                   let components = calendar.dateComponents([.month], from: lastUsed, to: today)
+                   
+//                  buat nyoba
+//                   let dateString = "2023-11-13 09:12:22"
+//                   item.lastUsed = format.date(from: dateString)
+                   
+                   
+                   print("Last Used: \(item.lastUsed)")
+                   if let monthsDifference = components.month, monthsDifference >= 2 {
+                       // Ubah status menjadi rarelyUsed jika lebih dari 2 bulan
+                       updateItemStatus(item, status: .rarelyUsed)
+                   }
+                   print("Status : \(item.status)")
+               }
+           }
+       }
 }

@@ -222,6 +222,7 @@ struct DashboardView: View {
     
     init(modelContext: ModelContext) {
         _dashboardController = StateObject(wrappedValue: DashboardController(modelContext: modelContext))
+        
     }
     
     private var filteredItems: [WardrobeItem] {
