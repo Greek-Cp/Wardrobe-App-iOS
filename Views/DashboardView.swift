@@ -68,7 +68,7 @@ struct ItemCardView: View {
                     } else {
                         Rectangle()
                             .fill(Color(UIColor.secondarySystemBackground))
-                                    .frame(height: 120)
+                            .frame(width: 170, height: 130)
                                     .overlay(
                                         VStack(spacing: 8) {
                                             Image(systemName: "photo")
