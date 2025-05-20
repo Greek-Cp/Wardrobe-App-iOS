@@ -63,7 +63,7 @@ struct ItemCardView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 130)
+                            .frame(width: 170,height: 130)
                             .clipped()
                     } else {
                         Rectangle()
