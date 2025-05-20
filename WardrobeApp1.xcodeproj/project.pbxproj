@@ -434,7 +434,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"WardrobeApp1/Preview Content\"";
-				DEVELOPMENT_TEAM = 5QGHM9F69G;
+				DEVELOPMENT_TEAM = N5BWL578F9;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = WardrobeApp1/Info.plist;
@@ -453,7 +453,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = tim3.WardrobeAppIOS;
+				PRODUCT_BUNDLE_IDENTIFIER = tim3.WardrobeApp1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

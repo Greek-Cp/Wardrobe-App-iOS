@@ -63,7 +63,7 @@ struct ItemCardView: View {
                         Image(uiImage: uiImage)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 130)
+                            .frame(width: 170,height: 130)
                             .clipped()
                     } else {
                         Rectangle()
@@ -123,7 +123,7 @@ struct ItemCardView: View {
             .background(Color(UIColor.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .frame(height: 200)
+            .frame(width: 170,height: 200)
         }
         .buttonStyle(PlainButtonStyle())
         .contextMenu {
