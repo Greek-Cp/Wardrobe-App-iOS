@@ -8,7 +8,7 @@ class NotificationHelper {
         
         let itemsToNotify = items.filter { item in
             guard let lastActionDate = item.lastActionDate else {
-                return true // belum pernah dipakai
+                return false // belum pernah dipakai
             }
             let components = calendar.dateComponents([.day], from: lastActionDate, to: today)
             return (components.day ?? 0) >= 14
@@ -24,7 +24,7 @@ class NotificationHelper {
         
         let itemsToNotify = items.filter { item in
             guard let lastUsed = item.lastUsed else {
-                return true // belum pernah dipakai
+                return false // belum pernah dipakai
             }
             let components = calendar.dateComponents([.day], from: lastUsed, to: today)
             return (components.day ?? 0) >= 60
