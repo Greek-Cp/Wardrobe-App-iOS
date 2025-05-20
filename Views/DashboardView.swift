@@ -123,7 +123,7 @@ struct ItemCardView: View {
             .background(Color(UIColor.secondarySystemBackground))
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-            .frame(width: 170,height: 200)
+            .frame(height: 200)
         }
         .buttonStyle(PlainButtonStyle())
         .contextMenu {
