@@ -215,7 +215,7 @@ struct DetailItemView: View {
                                             .padding(.vertical, 8)
                                             .padding(.horizontal, 12)
                                             .frame(maxWidth: .infinity)
-                                            .background(editedStyle == styleOption ? Color.blue : Color.gray.opacity(0.1))
+                                            .background(editedStyle == styleOption ? colorTheme : Color.gray.opacity(0.1))
                                             .foregroundColor(editedStyle == styleOption ? .white : .primary)
                                             .cornerRadius(8)
                                     }
